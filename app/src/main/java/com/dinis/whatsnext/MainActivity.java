@@ -25,8 +25,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
 
     //popular movies
-    private static final String JSON_URL = "https://api.themoviedb.org/3/movie/popular?api_key=3c56b344ede62a30660b01ccd5f8c655&language=en-US&page=1";
-    //private static final String JSON_URL = "https://run.mocky.io/v3/2c3058a8-ebf2-491b-aee6-e5747d5e649c";
+    private static final String JSON_URL = "https://api.themoviedb.org/3/movie/popular?api_key=3c56b344ede62a30660b01ccd5f8c655";
+    //private static final String JSON_URL = "https://run.mocky.io/v3/296cb39a-969d-48ed-99b1-4fd7067f99c7";
 
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
@@ -62,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
                     urlConnection = (HttpsURLConnection) url.openConnection();
 
                     InputStream is = urlConnection.getInputStream();
+
+                    Log.d("MOVIES","???");
+
                     InputStreamReader isr = new InputStreamReader(is);
+
 
                     int data = isr.read();
                     while( data != -1 ){
