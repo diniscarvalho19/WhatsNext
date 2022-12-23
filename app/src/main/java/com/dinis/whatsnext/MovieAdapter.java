@@ -42,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         // Using Glide Library to display the image
         GlideApp.with(mContext)
-                .load("https://image.tmdb.org/t/p/w500" + mData.get(position).getImg())
+                .load(mData.get(position).getImg())
                 .into(holder.image);
 
 
