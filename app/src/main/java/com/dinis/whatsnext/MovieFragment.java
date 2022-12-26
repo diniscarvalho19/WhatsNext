@@ -2,11 +2,15 @@ package com.dinis.whatsnext;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
+import android.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +27,8 @@ public class MovieFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    View root;
 
     public MovieFragment() {
         // Required empty public constructor
@@ -59,6 +65,21 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie, container, false);
+        root =inflater.inflate(R.layout.fragment_movie, container, false);
+        Bundle bundle = this.getArguments();
+        String image, title, id;
+        image = bundle.getString("cover");
+        title = bundle.getString("title");
+        id = bundle.getString("id");
+        TextView textView = (TextView) root.findViewById(R.id.movieTitle);
+        textView.setText(title);
+
+        ImageView imageView = (ImageView) root.findViewById(R.id.movieCover);
+        Glide.with(root)
+                .load(image)
+                .into(imageView);
+
+
+        return root;
     }
 }

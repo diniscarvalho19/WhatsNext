@@ -16,13 +16,14 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
 
-
+    private final RecyclerViewInterface recyclerViewInterface;
     private Context mContext;
     private List<MovieModelClass> mData;
 
-    public MovieAdapter(Context mContext, List<MovieModelClass> mData) {
+    public MovieAdapter(Context mContext, List<MovieModelClass> mData, RecyclerViewInterface recyclerViewInterface) {
         this.mContext = mContext;
         this.mData = mData;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
@@ -31,7 +32,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         View v;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         v = inflater.inflate(R.layout.movie_item, parent, false);
-        return new MyViewHolder(v);
+        return new MyViewHolder(v, recyclerViewInterface);
     }
 
     @Override
@@ -59,15 +60,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         TextView id, name;
         ImageView image;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
 
             id = itemView.findViewById(R.id.id_txt);
             name = itemView.findViewById(R.id.name_txt);
             image = itemView.findViewById(R.id.imageView);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (recyclerViewInterface!=null){
+                        int position = getAdapterPosition();
+                        if (position!= RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemClick(position);
+                        }
+                    }
+                }
+            });
 
         }
+    }
+
+    public MovieModelClass getItem(int position){
+        return mData.get(position);
     }
 
 

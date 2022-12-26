@@ -1,8 +1,19 @@
 package com.dinis.whatsnext;
 
-public class MovieModelClass {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-    String id, name, img;
+import java.io.Serializable;
+
+@Entity(tableName = "movies")
+public class MovieModelClass implements Serializable {
+    @PrimaryKey
+    String id;
+    @ColumnInfo(name = "title")
+    String name;
+    @ColumnInfo(name = "img")
+    String img;
 
     public MovieModelClass(String id, String name, String img) {
         this.id = id;

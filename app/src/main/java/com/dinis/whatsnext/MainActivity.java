@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface{
 
     //popular movies
     //private static final String JSON_URL = "https://api.themoviedb.org/3/movie/popular?api_key=3c56b344ede62a30660b01ccd5f8c655&page=1";
@@ -32,7 +37,21 @@ public class MainActivity extends AppCompatActivity {
 
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
+    MovieAdapter adapter;
+    Fragment movieFrag = new MovieFragment();
+    public void getMovieFrag(String id, String title, String cover){
+        FragmentManager fragmentManager = getFragmentManager();
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+        bundle.putString("title", title);
+        bundle.putString("cover", cover);
+        movieFrag.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, movieFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
 
         //MyTask task = new MyTask();
         //task.execute();
+    }
+
+
+    //On movie click
+    @Override
+    public void onItemClick(int position) {
+        getMovieFrag(adapter.getItem(position).getId(),adapter.getItem(position).getName(),adapter.getItem(position).getImg());
+
     }
 
     private class MyTask extends AsyncTask<String, Integer, String> {
@@ -190,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
 
-        MovieAdapter adapter = new MovieAdapter(this, movieList);
+       adapter = new MovieAdapter(this, movieList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerView.setAdapter(adapter);
