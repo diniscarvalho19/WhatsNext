@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     }
 
                     model.setId(id);
-                    model.setLocations(allLocations.toString());
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));
 
