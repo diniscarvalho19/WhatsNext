@@ -1,6 +1,7 @@
 package com.dinis.whatsnext;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,13 +32,12 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface{
 
     //popular movies
-    //private static final String JSON_URL = "https://api.themoviedb.org/3/movie/popular?api_key=3c56b344ede62a30660b01ccd5f8c655&page=1";
-    //private static final String JSON_URL = "https://run.mocky.io/v3/99f38e18-199f-4f11-affb-69a1b9c36d1a";
-    private static final String JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=lost&country=uk";
+    private static String JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=lost&country=uk";
 
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
     MovieAdapter adapter;
+    SearchView searchView;
     Fragment movieFrag = new MovieFragment();
     public void getMovieFrag(String id, String title, String cover){
         FragmentManager fragmentManager = getFragmentManager();
@@ -58,6 +58,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        searchView = findViewById(R.id.searchView);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                movieList = new ArrayList<>();
+                recyclerView = findViewById(R.id.recyclerView);
+                JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=" + query + "&country=uk";
+                GetData getData = new GetData();
+                getData.execute();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         movieList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
@@ -71,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
 
+
     //On movie click
     @Override
     public void onItemClick(int position) {
@@ -78,55 +97,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     }
 
-    private class MyTask extends AsyncTask<String, Integer, String> {
-
-        // Runs in UI before background thread is called
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Do something like display a progress bar
-
-        }
-
-        // This is run in a background thread
-        @Override
-        protected String doInBackground(String... params) {
-            // get the string from params, which is an array
-            int StatusCode = 0;
-            try {
-                URL url = new URL(JSON_URL);
-                HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty ("X-RapidAPI-Key", "1d4c45ee65msh3f3913364221f69p113272jsnb9979b2b3f40");
-                urlConnection.setRequestProperty("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com");
-                StatusCode = urlConnection.getResponseCode();
-
-            } catch (Exception e) {
-                //Toast.makeText(Act_Details.this, ""+e, Toast.LENGTH_SHORT).show();
-            }
-
-            return String.valueOf(StatusCode);
-        }
-
-        // This is called from background thread but runs in UI
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            // Do things like update the progress bar
-
-        }
-
-        // This runs in UI when background thread finishes
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            // Do things like hide the progress bar or change a TextView
-            Log.d("MOVIES", "RESULTADO");
-            Log.d("MOVIES", result);
-
-
-        }
-    }
 
     public class GetData extends AsyncTask<String, String, String>{
 
@@ -179,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("MOVIES","POST");
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 JSONArray jsonArray = jsonObject.getJSONArray("results");
@@ -189,18 +158,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     MovieModelClass model = new MovieModelClass();
                     JSONArray locations = jsonObject1.getJSONArray("locations");
-
+                    String id = jsonObject1.getJSONObject("external_ids").getJSONObject("imdb").getString("id");
                     for (int j = 0; j < locations.length(); j++) {
                         String l = locations.getJSONObject(j).getString("display_name");
                         allLocations.append(l).append("\n");
 
                     }
 
-                    //model.setId(jsonObject1.getString("vote_average"));
-                    model.setId(allLocations.toString().toString());
+                    model.setId(id);
+                    model.setLocations(allLocations.toString());
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));
-
 
                     movieList.add(model);
                 }
@@ -216,12 +184,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
     private void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
-
        adapter = new MovieAdapter(this, movieList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerView.setAdapter(adapter);
-
+       recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       recyclerView.setAdapter(adapter);
     }
 
 

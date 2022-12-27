@@ -87,7 +87,7 @@ public class MovieFragment extends Fragment {
             public void onClick(View view) {
                 db.dao().insert(new MovieModelClass(id,title,image));
                 for(MovieModelClass movie: db.dao().getAll()){
-                    System.out.println(movie.getName());
+                    System.out.println(movie.getId());
                 }
             }
         });
