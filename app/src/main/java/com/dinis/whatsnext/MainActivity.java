@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter adapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
+    BottomNavigationView bottomNavigationView;
     public void getMovieFrag(String id, String title, String cover){
         FragmentManager fragmentManager = getFragmentManager();
         Bundle bundle = new Bundle();
@@ -50,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.replace(R.id.mainActivity, movieFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -75,6 +83,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
+        });
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.page_1:
+                    getFragmentManager().popBackStack();
+                    break;
+                case R.id.page_2:
+                    getMovieFrag("id","title","123123");
+                    break;
+            }
+            return true;
         });
 
         movieList = new ArrayList<>();
