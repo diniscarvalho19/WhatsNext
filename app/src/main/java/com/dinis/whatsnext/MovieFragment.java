@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,9 +28,10 @@ public class MovieFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    DB db;
 
     View root;
-
+    Button addMovie;
     public MovieFragment() {
         // Required empty public constructor
     }
@@ -78,8 +80,17 @@ public class MovieFragment extends Fragment {
         Glide.with(root)
                 .load(image)
                 .into(imageView);
-
-
+        db = DB.getInstance(getActivity());
+        addMovie = (Button)root.findViewById(R.id.addMovie);
+        addMovie.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                db.dao().insert(new MovieModelClass(id,title,image));
+                for(MovieModelClass movie: db.dao().getAll()){
+                    System.out.println(movie.getName());
+                }
+            }
+        });
         return root;
     }
 }

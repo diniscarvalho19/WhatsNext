@@ -1,5 +1,6 @@
 package com.dinis.whatsnext;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -8,7 +9,7 @@ import java.io.Serializable;
 
 @Entity(tableName = "movies")
 public class MovieModelClass implements Serializable {
-    @PrimaryKey
+    @PrimaryKey @NonNull
     String id;
     @ColumnInfo(name = "title")
     String name;
