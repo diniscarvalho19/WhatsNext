@@ -16,6 +16,8 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,8 +45,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter adapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
+<<<<<<< Updated upstream
     Fragment watchlistFrag = new WatchlistFragment();
     BottomNavigationView bottomNavigationView;
+=======
+
+>>>>>>> Stashed changes
     public void getMovieFrag(String id, String title, String cover){
         FragmentManager fragmentManager = getFragmentManager();
         Bundle bundle = new Bundle();
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.replace(R.id.mainActivity, movieFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+<<<<<<< Updated upstream
     }
 
     public void getWatchlistFrag(){
@@ -64,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.replace(R.id.mainActivity, watchlistFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+=======
+>>>>>>> Stashed changes
     }
 
 
@@ -189,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         allLocations.append(l).append("\n");
 
                     }
-
                     model.setId(id);
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));
