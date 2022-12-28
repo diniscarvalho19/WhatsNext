@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter adapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
+    Fragment watchlistFrag = new WatchlistFragment();
     BottomNavigationView bottomNavigationView;
     public void getMovieFrag(String id, String title, String cover){
         FragmentManager fragmentManager = getFragmentManager();
@@ -57,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.commit();
     }
 
+    public void getWatchlistFrag(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, watchlistFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
 
     @Override
@@ -91,19 +99,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     getFragmentManager().popBackStack();
                     break;
                 case R.id.page_2:
-                    getMovieFrag("id","title","123123");
+                    getWatchlistFrag();
                     break;
             }
             return true;
         });
-
         movieList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
-
         //async task
         GetData getData = new GetData();
         getData.execute();
-
         //MyTask task = new MyTask();
         //task.execute();
     }
