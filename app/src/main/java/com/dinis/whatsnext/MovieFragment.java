@@ -53,10 +53,11 @@ public class MovieFragment extends Fragment {
         // Inflate the layout for this fragment
         root =inflater.inflate(R.layout.fragment_movie, container, false);
         Bundle bundle = this.getArguments();
-        String image, title, id;
+        String image, title, id, loc;
         image = bundle.getString("cover");
         title = bundle.getString("title");
         id = bundle.getString("id");
+        loc = bundle.getString("loc");
         TextView textView = (TextView) root.findViewById(R.id.movieTitle);
         textView.setText(title);
 
@@ -69,7 +70,7 @@ public class MovieFragment extends Fragment {
         addMovie.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                db.dao().insert(new MovieModelClass(id,title,image));
+                db.dao().insert(new MovieModelClass(id,title,image,loc));
                 for(MovieModelClass movie: db.dao().getAll()){
                     System.out.println(movie.getName());
                 }

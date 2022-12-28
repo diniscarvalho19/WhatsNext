@@ -38,8 +38,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.id.setText(mData.get(position).getId());
+        holder.locations.setText(mData.get(position).getLocations());
         holder.name.setText(mData.get(position).getName());
+
 
         // Using Glide Library to display the image
         GlideApp.with(mContext)
@@ -57,13 +58,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView id, name;
+        TextView locations, name;
         ImageView image;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
 
-            id = itemView.findViewById(R.id.id_txt);
+            locations = itemView.findViewById(R.id.id_txt);
             name = itemView.findViewById(R.id.name_txt);
             image = itemView.findViewById(R.id.imageView);
 

@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 
-@Database(entities = MovieModelClass.class, version = 1, exportSchema = false)
+@Database(entities = MovieModelClass.class, version = 3, exportSchema = false)
 public abstract class DB extends RoomDatabase{
     private static DB db;
     private static String dbName = "watchlist";

@@ -45,24 +45,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter adapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
-<<<<<<< Updated upstream
+
     Fragment watchlistFrag = new WatchlistFragment();
     BottomNavigationView bottomNavigationView;
-=======
 
->>>>>>> Stashed changes
-    public void getMovieFrag(String id, String title, String cover){
+    public void getMovieFrag(String id, String title, String cover, String locations){
         FragmentManager fragmentManager = getFragmentManager();
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
         bundle.putString("title", title);
         bundle.putString("cover", cover);
+        bundle.putString("locations", locations);
         movieFrag.setArguments(bundle);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainActivity, movieFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-<<<<<<< Updated upstream
     }
 
     public void getWatchlistFrag(){
@@ -71,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.replace(R.id.mainActivity, watchlistFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-=======
->>>>>>> Stashed changes
     }
 
 
@@ -115,11 +111,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         });
         movieList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
-        //async task
         GetData getData = new GetData();
         getData.execute();
-        //MyTask task = new MyTask();
-        //task.execute();
     }
 
 
@@ -127,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     //On movie click
     @Override
     public void onItemClick(int position) {
-        getMovieFrag(adapter.getItem(position).getId(),adapter.getItem(position).getName(),adapter.getItem(position).getImg());
+        getMovieFrag(adapter.getItem(position).getId(),adapter.getItem(position).getName(),adapter.getItem(position).getImg(),adapter.getItem(position).getLocations());
 
     }
 
@@ -198,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                         allLocations.append(l).append("\n");
 
                     }
+                    model.setLocations(allLocations.toString());
                     model.setId(id);
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));

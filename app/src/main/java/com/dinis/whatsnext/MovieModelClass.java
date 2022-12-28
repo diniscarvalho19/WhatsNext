@@ -16,12 +16,14 @@ public class MovieModelClass implements Serializable {
     @ColumnInfo(name = "img")
     String img;
 
-    public String mobius;
+    @ColumnInfo(name = "loc")
+    String locations;
 
-    public MovieModelClass(String id, String name, String img) {
+    public MovieModelClass(String id, String name, String img, String loc) {
         this.id = id;
         this.name = name;
         this.img = img;
+        this.locations = loc;
     }
 
     public MovieModelClass() {
@@ -49,6 +51,14 @@ public class MovieModelClass implements Serializable {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getLocations() {
+        return locations;
+    }
+
+    public void setLocations(String locations) {
+        this.locations = locations;
     }
 
 
