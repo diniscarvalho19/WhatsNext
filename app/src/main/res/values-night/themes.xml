@@ -2,15 +2,45 @@
     <!-- Base application theme. -->
     <style name="Theme.WhatsNext" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/d_primary</item>
+        <item name="colorOnPrimary">@color/d_on_primary</item>
+        <item name="colorPrimaryContainer">@color/d_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/d_on_primary_container</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/d_secondary</item>
+        <item name="colorOnSecondary">@color/d_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/d_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/d_on_secondary_container</item>
+        <!-- Error -->
+        <item name="colorError">@color/d_error</item>
+        <item name="colorOnError">@color/d_on_error</item>
+        <item name="colorErrorContainer">@color/d_error_container</item>
+        <item name="colorOnErrorContainer">@color/d_on_error_container</item>
+        <!-- Background -->
+        <item name="backgroundColor">@color/d_background</item>
+        <item name="colorOnBackground">@color/d_on_background</item>
+        <!-- Surface -->
+        <item name="colorSurface">@color/d_surface</item>
+        <item name="colorOnSurface">@color/d_on_surface</item>
+        <item name="colorSurfaceVariant">@color/d_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/d_on_surface_variant</item>
+        <!-- Outline -->
+        <item name="colorOutline">@color/d_outline</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
+
+
+        <!--
+        !- Primary brand color. -
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
+        !- Secondary brand color. -
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        !- Status bar color. -
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item> -->
+
     </style>
 </resources>

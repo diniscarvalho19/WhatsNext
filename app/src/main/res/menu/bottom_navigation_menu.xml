@@ -24,5 +24,10 @@
         android:icon="@drawable/ic_user"
         android:title="@string/profile"/>
 
+    <item
+        android:id="@+id/page_5"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_group_24"
+        android:title="Group"/>
 
 </menu>

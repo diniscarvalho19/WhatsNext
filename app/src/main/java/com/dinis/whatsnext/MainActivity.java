@@ -43,7 +43,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     Fragment movieFrag = new MovieFragment();
     Fragment profileFrag = new ProfileFragment();
     Fragment watchlistFrag = new WatchlistFragment();
+
     Fragment communityFragment = new CommunityFragment();
+
+    Fragment groupFrag = new GroupsFragment();
+
     BottomNavigationView bottomNavigationView;
 
     public void getMovieFrag(String id, String title, String cover, String locations){
@@ -80,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainActivity, communityFragment);
+
+    public void getGroupsFrag(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, groupFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -128,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     break;
                 case R.id.page_4:
                     getCommunityFrag();
+                    break;
+                case R.id.page_5:
+                    getGroupsFrag();
                     break;
             }
             return true;
