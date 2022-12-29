@@ -6,7 +6,7 @@
         <item name="android:windowBackground">@color/d_background</item>
 
         <!-- Status Bar -->
-        <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
+        <item name="android:statusBarColor">@color/d_surface_variant</item>
 
         <!-- Text -->
         <item name="android:fontFamily">@font/roboto_regular</item>
