@@ -25,6 +25,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -79,6 +83,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         //Initiate FB
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        List<MovieModelClass> movieList = new ArrayList<>();
 
         //Username
         assert user != null;
@@ -88,21 +93,39 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         DatabaseReference mDatabase = database.getReference("users");
 
         //Read DB
-        mDatabase.child("users").child(username).child("watchlist").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        mDatabase.child(username).child("watchlist").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Log.e("firebase", "Error getting data", task.getException());
                 }
                 else {
-                    Log.d("firebase", username + ": " + String.valueOf(task.getResult().getValue()));
+                    if (task.getResult().getValue() != null){
+                        String[] movies = Objects.requireNonNull(task.getResult().getValue()).toString().split(", t");
+                        for(String movie: movies){
+                            String[] movieDetails = movie.replaceAll("\\{","").replaceAll("\\}","").split("=img=");
+                            String id = movieDetails[0];
+                            movieDetails = movieDetails[1].split(", name=");
+                            String img = movieDetails[0];
+                            String name = movieDetails[1];
+                            movieList.add(new MovieModelClass(id,name,img,""));
+
+                        }
+
+                        PutDataIntoRecyclerView(movieList);
+                    }
+
+
                 }
+
             }
         });
 
 
-        List<MovieModelClass> movieList = db.dao().getAll();
-        PutDataIntoRecyclerView(movieList);
+
+
+
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -125,7 +148,13 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
                 movieList.remove(viewHolder.getAdapterPosition());
-                db.dao().delete(deletedMovie);
+
+                //delete
+                mDatabase.child(username).child("watchlist").child(deletedMovie.getId()).removeValue();
+
+
+
+
                 // below line is to notify our item is removed from adapter.
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
 
@@ -136,7 +165,15 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                         // adding on click listener to our action of snack bar.
                         // below line is to add our item to array list with a position.
                         movieList.add(position, deletedMovie);
-                        db.dao().insert(deletedMovie);
+
+
+                        //undo
+                        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("users");
+                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
+                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
+
                         // below line is to notify item is
                         // added to our adapter class.
                         adapter.notifyItemInserted(position);

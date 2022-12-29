@@ -2,4 +2,18 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
+
+    <!-- Text size -->
+    <dimen name="text_headline">32sp</dimen>
+    <dimen name="text_title">16sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_button">14sp</dimen>
+
+    <!-- Border -->
+    <dimen name="border_radius">24dp</dimen>
+    <dimen name="border_width">1dp</dimen>
+
+    <!-- Margins -->
+    <dimen name="margin">8dp</dimen>
+
 </resources>

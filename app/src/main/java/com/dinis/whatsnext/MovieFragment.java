@@ -93,7 +93,6 @@ public class MovieFragment extends Fragment {
                 DatabaseReference myRef = database.getReference("users");
                 myRef.child(username).child("watchlist").child(id).child("name").setValue(title);
                 myRef.child(username).child("watchlist").child(id).child("img").setValue(image);
-                myRef.child(username).child("watchlist").child(id).child("loc").setValue(loc);
 
 
 

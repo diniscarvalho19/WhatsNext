@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- https://stackoverflow.com/questions/33847440/android-button-border-color -->
+    <item android:id="@+id/button_simple">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="@dimen/border_width"
+                android:color="@color/d_outline" />
+            <corners android:radius="@dimen/border_radius" />
+        </shape>
+    </item>
+</selector>
