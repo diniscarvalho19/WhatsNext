@@ -20,7 +20,6 @@
 
     </androidx.appcompat.widget.SearchView>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="409dp"

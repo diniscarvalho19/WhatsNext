@@ -8,11 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,13 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +30,20 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface{
 
+
+
     //popular movies
     private static String JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=lost&country=uk";
 
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
-    MovieAdapter adapter;
+    MovieAdapter movieAdapter;
+    CommunityAdapter friendAdapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
     Fragment profileFrag = new ProfileFragment();
     Fragment watchlistFrag = new WatchlistFragment();
+    Fragment communityFragment = new CommunityFragment();
     BottomNavigationView bottomNavigationView;
 
     public void getMovieFrag(String id, String title, String cover, String locations){
@@ -75,6 +72,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainActivity, profileFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void getCommunityFrag(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, communityFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -121,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 case R.id.page_3:
                     getProfileFrag();
                     break;
+                case R.id.page_4:
+                    getCommunityFrag();
+                    break;
             }
             return true;
         });
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     //On movie click
     @Override
     public void onItemClick(int position) {
-        getMovieFrag(adapter.getItem(position).getId(),adapter.getItem(position).getName(),adapter.getItem(position).getImg(),adapter.getItem(position).getLocations());
+        getMovieFrag(movieAdapter.getItem(position).getId(), movieAdapter.getItem(position).getName(), movieAdapter.getItem(position).getImg(), movieAdapter.getItem(position).getLocations());
 
     }
 
@@ -222,9 +230,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
     private void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
-       adapter = new MovieAdapter(this, movieList, this);
+       movieAdapter = new MovieAdapter(this, movieList, this);
        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-       recyclerView.setAdapter(adapter);
+       recyclerView.setAdapter(movieAdapter);
     }
 
 

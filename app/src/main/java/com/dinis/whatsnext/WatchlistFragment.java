@@ -46,7 +46,6 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
     FirebaseUser user;
 
     View root;
-    Button addMovie;
     RecyclerView recyclerView;
     MovieAdapter adapter;
     public WatchlistFragment() {

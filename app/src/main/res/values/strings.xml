@@ -22,5 +22,7 @@
     <string name="click_to_register">Click to register</string>
     <string name="profile">Profile</string>
     <string name="logout">Logout</string>
+    <string name="community">Community</string>
+    <string name="username">Username</string>
 
 </resources>
