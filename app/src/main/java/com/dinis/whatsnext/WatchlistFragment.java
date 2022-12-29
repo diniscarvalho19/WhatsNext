@@ -2,6 +2,7 @@ package com.dinis.whatsnext;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class WatchlistFragment extends Fragment implements RecyclerViewInterface{
@@ -29,6 +38,8 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
     private String mParam1;
     private String mParam2;
     DB db;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     View root;
     Button addMovie;
@@ -65,9 +76,29 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         db = DB.getInstance(getActivity());
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
+        //Initiate FB
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
+        //Username
+        assert user != null;
+        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabase = database.getReference("users");
 
+        //Read DB
+        mDatabase.child("users").child(username).child("watchlist").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    Log.d("firebase", username + ": " + String.valueOf(task.getResult().getValue()));
+                }
+            }
+        });
 
 
         List<MovieModelClass> movieList = db.dao().getAll();

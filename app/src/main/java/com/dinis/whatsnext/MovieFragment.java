@@ -89,12 +89,12 @@ public class MovieFragment extends Fragment {
 
 
                 String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                Log.d("FireB","Trying to add to DB: " + username);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("message");
-                myRef.setValue("Hello, World!");
-                //myRef.child(username).push().setValue(new MovieModelClass(id,title,image,loc));
-                Log.d("FireB","Success: Added to DB");
+                DatabaseReference myRef = database.getReference("users");
+                myRef.child(username).child("watchlist").child(id).child("name").setValue(title);
+                myRef.child(username).child("watchlist").child(id).child("img").setValue(image);
+                myRef.child(username).child("watchlist").child(id).child("loc").setValue(loc);
+
 
 
 
