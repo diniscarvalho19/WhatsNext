@@ -2,6 +2,7 @@ package com.dinis.whatsnext;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class WatchlistFragment extends Fragment implements RecyclerViewInterface{
@@ -29,6 +42,8 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
     private String mParam1;
     private String mParam2;
     DB db;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     View root;
     Button addMovie;
@@ -65,13 +80,52 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         db = DB.getInstance(getActivity());
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
+        //Initiate FB
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        List<MovieModelClass> movieList = new ArrayList<>();
+
+        //Username
+        assert user != null;
+        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabase = database.getReference("users");
+
+        //Read DB
+        mDatabase.child(username).child("watchlist").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    if (task.getResult().getValue() != null){
+                        String[] movies = Objects.requireNonNull(task.getResult().getValue()).toString().split(", t");
+                        for(String movie: movies){
+                            String[] movieDetails = movie.replaceAll("\\{","").replaceAll("\\}","").split("=img=");
+                            String id = movieDetails[0];
+                            movieDetails = movieDetails[1].split(", name=");
+                            String img = movieDetails[0];
+                            String name = movieDetails[1];
+                            movieList.add(new MovieModelClass(id,name,img,""));
+
+                        }
+
+                        PutDataIntoRecyclerView(movieList);
+                    }
+
+
+                }
+
+            }
+        });
 
 
 
 
 
-        List<MovieModelClass> movieList = db.dao().getAll();
-        PutDataIntoRecyclerView(movieList);
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -94,7 +148,13 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
                 movieList.remove(viewHolder.getAdapterPosition());
-                db.dao().delete(deletedMovie);
+
+                //delete
+                mDatabase.child(username).child("watchlist").child(deletedMovie.getId()).removeValue();
+
+
+
+
                 // below line is to notify our item is removed from adapter.
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
 
@@ -105,7 +165,15 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                         // adding on click listener to our action of snack bar.
                         // below line is to add our item to array list with a position.
                         movieList.add(position, deletedMovie);
-                        db.dao().insert(deletedMovie);
+
+
+                        //undo
+                        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("users");
+                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
+                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
+
                         // below line is to notify item is
                         // added to our adapter class.
                         adapter.notifyItemInserted(position);

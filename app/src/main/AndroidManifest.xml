@@ -32,6 +32,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:name=".MainActivity"
             android:exported="true">
         </activity>
