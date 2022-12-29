@@ -15,15 +15,15 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Material3.Light"
+        android:theme="@style/Theme.WhatsNext"
         tools:targetApi="31">
         <activity
             android:name=".Registration"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:theme="@style/Theme.WhatsNext"
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:theme="@style/Theme.WhatsNext"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextHeader1">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_headline</item>
+    </style>
+
+    <style name="TextHeader2">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_title</item>
+    </style>
+
+    <style name="TextTitle">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_title</item>
+    </style>
+
+    <style name="TextBody">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="TextButton">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_button</item>
+    </style>
+
+    <style name="ButtonText">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">@dimen/text_button</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:background">@drawable/button_simple</item>
+    </style>
+
+    <style name="TextField">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:color">@color/d_on_background</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:strokeColor">@color/d_outline</item>
+        <item name="android:strokeWidth">@dimen/border_width</item>
+        <item name="android:bottomRightRadius">@dimen/border_radius</item>
+    </style>
+
+</resources>
