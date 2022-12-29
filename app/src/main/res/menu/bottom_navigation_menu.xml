@@ -10,4 +10,10 @@
         android:enabled="true"
         android:icon="@drawable/ic_watchlist"
         android:title="@string/watchlist"/>
+
+    <item
+        android:id="@+id/page_3"
+        android:enabled="true"
+        android:icon="@drawable/ic_user"
+        android:title="@string/profile"/>
 </menu>

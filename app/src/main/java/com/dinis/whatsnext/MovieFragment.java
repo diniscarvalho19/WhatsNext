@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import android.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
 
 
 public class MovieFragment extends Fragment {
@@ -22,6 +29,8 @@ public class MovieFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     DB db;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     View root;
     Button addMovie;
@@ -61,6 +70,9 @@ public class MovieFragment extends Fragment {
         TextView textView = (TextView) root.findViewById(R.id.movieTitle);
         textView.setText(title);
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
         ImageView imageView = (ImageView) root.findViewById(R.id.movieCover);
         Glide.with(root)
                 .load(image)
@@ -74,6 +86,18 @@ public class MovieFragment extends Fragment {
                 for(MovieModelClass movie: db.dao().getAll()){
                     System.out.println(movie.getName());
                 }
+
+
+                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+                Log.d("FireB","Trying to add to DB: " + username);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("message");
+                myRef.setValue("Hello, World!");
+                //myRef.child(username).push().setValue(new MovieModelClass(id,title,image,loc));
+                Log.d("FireB","Success: Added to DB");
+
+
+
             }
         });
         return root;

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter adapter;
     SearchView searchView;
     Fragment movieFrag = new MovieFragment();
-
+    Fragment profileFrag = new ProfileFragment();
     Fragment watchlistFrag = new WatchlistFragment();
     BottomNavigationView bottomNavigationView;
 
@@ -71,11 +71,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.commit();
     }
 
+    public void getProfileFrag(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, profileFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
 
         searchView = findViewById(R.id.searchView);
         searchView.clearFocus();
@@ -105,6 +117,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     break;
                 case R.id.page_2:
                     getWatchlistFrag();
+                    break;
+                case R.id.page_3:
+                    getProfileFrag();
                     break;
             }
             return true;
@@ -179,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 JSONArray jsonArray = jsonObject.getJSONArray("results");
-
                 for (int i = 0; i < jsonArray.length(); i++){
                     StringBuilder allLocations = new StringBuilder();
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -189,13 +203,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     for (int j = 0; j < locations.length(); j++) {
                         String l = locations.getJSONObject(j).getString("display_name");
                         allLocations.append(l).append("\n");
-
                     }
                     model.setLocations(allLocations.toString());
                     model.setId(id);
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));
-
                     movieList.add(model);
                 }
 

@@ -64,6 +64,12 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         TextView textView = (TextView) root.findViewById(R.id.textView);
         db = DB.getInstance(getActivity());
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+
+
+
+
+
+
         List<MovieModelClass> movieList = db.dao().getAll();
         PutDataIntoRecyclerView(movieList);
 
