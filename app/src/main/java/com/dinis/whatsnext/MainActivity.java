@@ -80,10 +80,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.commit();
     }
 
-    public void getCommunityFrag(){
+    public void getCommunityFrag() {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainActivity, communityFragment);
+    }
 
     public void getGroupsFrag(){
         FragmentManager fragmentManager = getFragmentManager();
