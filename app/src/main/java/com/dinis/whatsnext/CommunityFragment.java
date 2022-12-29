@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -48,6 +49,7 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
     SearchView searchView;
     RecyclerView recyclerView;
     CommunityAdapter friendAdapter;
+
 
     public CommunityFragment() {
         // Required empty public constructor
@@ -96,16 +98,42 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
         searchView = root.findViewById(R.id.searchView);
 
 
+
+
         //Username
         assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+        mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    if (task.getResult().getValue() != null){
+                        Log.d("Com",task.getResult().getValue().toString());
+                        Log.d("Com",task.getResult().getValue().toString().split("=\\{.*\\}\\}\\},")[0]);
+                        Log.d("Com",task.getResult().getValue().toString().split("=\\{.*\\}\\}\\},")[1]);
+                        int count = 0;
+                        String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split("=\\{friend_request|\\}\\}\\}, ");
+                        for(String usr: users){
+                            if(count % 2 == 0){
+                                String name = usr.replaceAll("\\{","");
+                                everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
+                            }
+                            count++;
+                        }
+                        PutDataIntoRecyclerViewFriends(everyoneList);
+                    }
+                }
+
+            }
+        });
 
         searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 everyoneList.clear();
-
                 mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -114,27 +142,22 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
                         }
                         else {
                             if (task.getResult().getValue() != null){
-                                Log.d("Com", task.getResult().getValue().toString());
-                                /*String[] movies = Objects.requireNonNull(task.getResult().getValue()).toString().split(", t");
-                                for(String movie: movies){
-                                    String[] movieDetails = movie.replaceAll("\\{","").replaceAll("\\}","").split("=img=");
-                                    String id = movieDetails[0];
-                                    movieDetails = movieDetails[1].split(", name=");
-                                    String img = movieDetails[0];
-                                    String name = movieDetails[1];
-                                    everyoneList.add(new FriendModelClass("Hello","https://cdn-icons-png.flaticon.com/512/16/16363.png"));
-                                }*/
-                                everyoneList.add(new FriendModelClass("Hello","https://cdn-icons-png.flaticon.com/512/16/16363.png"));
+                                int count = 0;
+                                String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split("=\\{friend_request|\\}\\}\\}, ");
+                                for(String usr: users){
+                                    if(count % 2 == 0){
+                                        String name = usr.replaceAll("\\{","");
+                                        if(name.contains(query))
+                                            everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
+                                    }
+                                    count++;
+                                }
                                 PutDataIntoRecyclerViewFriends(everyoneList);
                             }
-
-
                         }
 
                     }
                 });
-
-
                 return true;
             }
 

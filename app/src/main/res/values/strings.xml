@@ -24,5 +24,6 @@
     <string name="logout">Logout</string>
     <string name="community">Community</string>
     <string name="username">Username</string>
+    <string name="plus">+</string>
 
 </resources>
