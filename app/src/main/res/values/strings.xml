@@ -26,6 +26,7 @@
     <string name="username">Username</string>
     <string name="plus">+</string>
     <string name="add_friends">Add friends</string>
+    <string name="add_movie">Add movie</string>
     <string name="emailTitle">Email:</string>
     <string name="usernameTitle">Username</string>
     <string name="accept_friend_requests">Accept Friend Requests</string>

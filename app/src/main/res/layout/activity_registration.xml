@@ -39,6 +39,13 @@
             android:layout_height="wrap_content"
             style="@style/TextField"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:text="@string/invalid_password"
+        style="@style/TextSmall"
+        android:layout_marginTop="4dp"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

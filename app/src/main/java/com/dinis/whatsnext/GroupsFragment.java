@@ -1,8 +1,10 @@
 package com.dinis.whatsnext;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +75,7 @@ public class GroupsFragment extends Fragment implements RecyclerViewInterface{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         root =inflater.inflate(R.layout.fragment_groups, container, false);
         TextView textView = (TextView) root.findViewById(R.id.textView);

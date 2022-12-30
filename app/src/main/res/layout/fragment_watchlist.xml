@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MovieFragment"
     android:orientation="vertical"
-    android:background="@color/white">
+    style= "@style/GeneralTheme">
     <TextView
         android:id="@+id/textView"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"

@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/base_cardview"
-    android:layout_margin="5dp"
+    android:layout_margin="4dp"
     android:background="#d6d6d6"
     app:contentPadding="16dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="@color/d_primary_container"
+    app:cardCornerRadius="@dimen/border_radius"
     app:cardElevation="8dp"
     app:cardMaxElevation="10dp"
     app:cardPreventCornerOverlap="true"
@@ -22,39 +22,43 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/base_cardview"
         app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fixed_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/fixed_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">>
+            app:layout_constraintVertical_bias="1.0">>
 
             <TextView
                 android:id="@+id/group_title"
+                style="@style/TextHeader2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Group Name"
+                android:textColor="@color/d_on_primary_container"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textSize="32sp"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/expand_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/round_corner"
+                android:padding="4dp"
+                android:radius="@dimen/border_radius"
                 android:src="@drawable/ic_baseline_expand_more_24"
                 app:layout_constraintBottom_toBottomOf="@id/fixed_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.802"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:tint="@color/d_primary_container" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

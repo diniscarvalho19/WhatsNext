@@ -3,10 +3,10 @@
     <!-- https://stackoverflow.com/questions/33847440/android-button-border-color -->
     <item android:id="@+id/button_simple">
         <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <stroke
+            <solid android:color="@color/d_surface" />
+            <!-- <stroke
                 android:width="@dimen/border_width"
-                android:color="@color/d_outline" />
+                android:color="@color/d_outline" /> -->
             <corners android:radius="@dimen/border_radius" />
         </shape>
     </item>

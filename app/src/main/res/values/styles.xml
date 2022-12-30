@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Theme -->
+
+    <style name="GeneralTheme">
+        <!-- Background -->
+        <item name="android:windowBackground">@color/d_background</item>
+        <item name="android:background">@color/d_background</item>
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/d_surface_variant</item>
+        <!-- Text -->
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <!-- Borders -->
+        <item name="android:radius">@dimen/border_radius</item>
+        <item name="android:strokeColor">@color/d_outline</item>
+        <!-- Margins -->
+        <item name="android:layout_marginTop">@dimen/margin</item>
+    </style>
+
+    <!-- Text -->
+
     <style name="TextHeader1">
         <item name="android:fontFamily">@font/roboto_bold</item>
         <item name="android:textColor">@color/d_on_background</item>
@@ -25,16 +46,26 @@
     </style>
 
     <style name="TextButton">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/d_on_surface</item>
         <item name="android:textSize">@dimen/text_button</item>
+        <item name="android:letterSpacing">@dimen/text_spacing_wide</item>
     </style>
 
-    <style name="ButtonText">
+    <style name="TextSmall">
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">@dimen/text_button</item>
         <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:textSize">@dimen/text_small</item>
+    </style>
+
+    <!-- Components -->
+
+    <style name="ButtonText">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">@dimen/text_button</item>
+        <item name="android:textColor">@color/d_surface</item>
         <item name="android:background">@drawable/button_simple</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="TextField">
@@ -44,7 +75,14 @@
         <item name="android:textColor">@color/d_on_background</item>
         <item name="android:strokeColor">@color/d_outline</item>
         <item name="android:strokeWidth">@dimen/border_width</item>
-        <item name="android:bottomRightRadius">@dimen/border_radius</item>
+        <item name="android:radius">@dimen/border_radius</item>
+    </style>
+
+    <style name="Card">
+        <item name="android:background">@color/d_primary_container</item>
+        <item name="android:color">@color/d_on_primary_container</item>
+        <item name="android:textColor">@color/d_on_background</item>
+        <item name="android:radius">@dimen/border_radius</item>
     </style>
 
 </resources>

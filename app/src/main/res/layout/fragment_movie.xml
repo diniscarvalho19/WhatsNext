@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MovieFragment"
     android:orientation="vertical"
-    android:background="@color/white">
+    style= "@style/GeneralTheme">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -26,10 +26,12 @@
 
     <Button
         android:id="@+id/addMovie"
-        android:layout_width="match_parent"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Button" />
+        android:layout_marginTop="24dp"
+        app:icon="@drawable/ic_baseline_add_24"
+        android:text="@string/add_movie"/>
 
 
 </LinearLayout>

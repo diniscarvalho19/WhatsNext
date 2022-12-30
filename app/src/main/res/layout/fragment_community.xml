@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="15dp"
     tools:context=".CommunityFragment"
-    android:background="@color/white">
+    style= "@style/GeneralTheme">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
