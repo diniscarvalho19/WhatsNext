@@ -90,9 +90,9 @@ public class MovieFragment extends Fragment {
 
                 String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("users");
-                myRef.child(username).child("watchlist").child(id).child("name").setValue(title);
-                myRef.child(username).child("watchlist").child(id).child("img").setValue(image);
+                DatabaseReference myRef = database.getReference("watchlist");
+                myRef.child(username).child(id).child("name").setValue(title);
+                myRef.child(username).child(id).child("img").setValue(image);
 
 
 

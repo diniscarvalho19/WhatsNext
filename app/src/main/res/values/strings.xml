@@ -25,5 +25,11 @@
     <string name="community">Community</string>
     <string name="username">Username</string>
     <string name="plus">+</string>
+    <string name="add_friends">Add friends</string>
+    <string name="emailTitle">Email:</string>
+    <string name="usernameTitle">Username</string>
+    <string name="accept_friend_requests">Accept Friend Requests</string>
+    <string name="x">X</string>
+    <string name="friend_list">Friend List</string>
 
 </resources>

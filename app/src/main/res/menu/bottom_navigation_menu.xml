@@ -13,12 +13,6 @@
         android:title="@string/watchlist"/>
 
     <item
-        android:id="@+id/page_4"
-        android:enabled="true"
-        android:icon="@drawable/ic_com"
-        android:title="@string/community"/>
-
-    <item
         android:id="@+id/page_5"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_group_24"

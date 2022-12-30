@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import java.util.Calendar;
+import java.util.Date;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -12,7 +13,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 import org.json.JSONArray;
@@ -25,6 +29,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -40,14 +45,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     MovieAdapter movieAdapter;
     CommunityAdapter friendAdapter;
     SearchView searchView;
+    FirebaseAuth auth;
+    FirebaseUser user;
     Fragment movieFrag = new MovieFragment();
     Fragment profileFrag = new ProfileFragment();
     Fragment watchlistFrag = new WatchlistFragment();
-
-    Fragment communityFragment = new CommunityFragment();
-
     Fragment groupFrag = new GroupsFragment();
-
     BottomNavigationView bottomNavigationView;
 
     public void getMovieFrag(String id, String title, String cover, String locations){
@@ -80,13 +83,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         fragmentTransaction.commit();
     }
 
-    public void getCommunityFrag() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainActivity, communityFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+
 
     public void getGroupsFrag(){
         FragmentManager fragmentManager = getFragmentManager();
@@ -99,11 +96,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Date currentTime = Calendar.getInstance().getTime();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        assert user != null;
+        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        myRef.child(username).child("last_login").setValue(currentTime.toString());
 
 
         searchView = findViewById(R.id.searchView);
@@ -137,9 +139,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     break;
                 case R.id.page_3:
                     getProfileFrag();
-                    break;
-                case R.id.page_4:
-                    getCommunityFrag();
                     break;
                 case R.id.page_5:
                     getGroupsFrag();

@@ -89,10 +89,10 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabase = database.getReference("users");
+        DatabaseReference mDatabase = database.getReference("watchlist");
 
         //Read DB
-        mDatabase.child(username).child("watchlist").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        mDatabase.child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
@@ -149,7 +149,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                 movieList.remove(viewHolder.getAdapterPosition());
 
                 //delete
-                mDatabase.child(username).child("watchlist").child(deletedMovie.getId()).removeValue();
+                mDatabase.child(username).child(deletedMovie.getId()).removeValue();
 
 
 
@@ -169,9 +169,9 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                         //undo
                         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("users");
-                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
-                        myRef.child(username).child("watchlist").child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
+                        DatabaseReference myRef = database.getReference("watchlist");
+                        myRef.child(username).child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
+                        myRef.child(username).child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
 
                         // below line is to notify item is
                         // added to our adapter class.

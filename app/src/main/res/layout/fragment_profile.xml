@@ -3,17 +3,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="top|center"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
     tools:context=".ProfileFragment"
     android:background="@color/white">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
     <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/profile_pic"
+        android:layout_width="137dp"
+        android:layout_height="120dp" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
     <TextView
-        android:id="@+id/user_details"
+        android:id="@+id/email_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="@string/emailTitle" />
+
+
+    <TextView
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
+    <TextView
+        android:id="@+id/name_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="@string/usernameTitle" />
+
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_blank_fragment"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
+
+    <Button
+        android:id="@+id/btn_addFriends"
+        android:layout_width="378dp"
+        android:layout_height="36dp"
+        android:text="@string/add_friends"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
+    <Button
+        android:id="@+id/btn_acceptFriends"
+        android:layout_width="378dp"
+        android:layout_height="36dp"
+        android:text="@string/accept_friend_requests"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
+
+    <Button
+        android:id="@+id/btn_listFriends"
+        android:layout_width="378dp"
+        android:layout_height="36dp"
+        android:text="@string/friend_list"
+        android:textSize="13sp" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"/>
 
     <Button
         android:text="@string/logout"

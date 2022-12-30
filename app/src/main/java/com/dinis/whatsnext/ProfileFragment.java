@@ -1,5 +1,7 @@
 package com.dinis.whatsnext;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,10 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,9 +38,17 @@ public class ProfileFragment extends Fragment {
 
     View root;
     FirebaseAuth auth;
-    Button button;
-    TextView textView;
+    Button logoutButton;
+    Button acceptFriendsButton;
+    Button addFriendsButton;
+    Button listFriendsButton;
+    TextView textViewEmail;
+    TextView textViewUsername;
     FirebaseUser user;
+    ImageView imageView;
+    Fragment communityFragment = new CommunityFragment();
+    Fragment acceptFriendsFragment = new AcceptFriendsFragment();
+    Fragment listFriendsFragment = new FriendListFragment();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -58,6 +72,30 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+    public void getCommunityFrag() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, communityFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void getFriendListFrag() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, listFriendsFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void getAccFriendsFrag() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, acceptFriendsFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +112,13 @@ public class ProfileFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_profile, container, false);
 
         auth = FirebaseAuth.getInstance();
-        button = root.findViewById(R.id.btn_logout);
-        textView = root.findViewById(R.id.user_details);
+        logoutButton = root.findViewById(R.id.btn_logout);
+        addFriendsButton = root.findViewById(R.id.btn_addFriends);
+        acceptFriendsButton = root.findViewById(R.id.btn_acceptFriends);
+        listFriendsButton = root.findViewById(R.id.btn_listFriends);
+        textViewEmail = root.findViewById(R.id.email);
+        textViewUsername = root.findViewById(R.id.username);
+        imageView = root.findViewById(R.id.profile_pic);
         user = auth.getCurrentUser();
 
         if (user == null){
@@ -83,16 +126,39 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         }else{
-            textView.setText(user.getEmail());
+            textViewEmail.setText(user.getEmail());
+            textViewUsername.setText(Objects.requireNonNull(user.getEmail()).split("@")[0]);
+            GlideApp.with(this).load("https://cdn-icons-png.flaticon.com/512/16/16363.png").into(imageView);
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity(), Login.class);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        addFriendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getCommunityFrag();
+            }
+        });
+
+        acceptFriendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getAccFriendsFrag();
+            }
+        });
+
+        listFriendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFriendListFrag();
             }
         });
 

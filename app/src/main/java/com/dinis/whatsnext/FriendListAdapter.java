@@ -1,8 +1,6 @@
 package com.dinis.whatsnext;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +20,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 import java.util.Objects;
 
-public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyViewHolder> {
+public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> {
 
     private final RecyclerViewInterface recyclerViewInterface;
     private final Context mContext;
-    private final List<FriendModelClass> mData;
+    private final List<FriendRequestModelClass> mData;
     FirebaseAuth auth;
     FirebaseUser user;
 
 
-    public CommunityAdapter(Context mContext, List<FriendModelClass> mData, RecyclerViewInterface recyclerViewInterface) {
+    public FriendListAdapter(Context mContext, List<FriendRequestModelClass> mData, RecyclerViewInterface recyclerViewInterface) {
         this.mContext = mContext;
         this.mData = mData;
         this.recyclerViewInterface = recyclerViewInterface;
@@ -42,7 +40,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        v = inflater.inflate(R.layout.friend_item, parent, false);
+        v = inflater.inflate(R.layout.unfriend_item, parent, false);
         return new MyViewHolder(v, recyclerViewInterface);
     }
 
@@ -51,22 +49,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
 
         int pos = position;
 
-        holder.name.setText(mData.get(position).getUsername());
-
-        if(mData.get(position).getStatus().equals("not accepted")){
-            holder.name.setTextColor(Color.BLACK);
-        }else if(mData.get(position).getStatus().equals("accepted")){
-            holder.name.setTextColor(Color.GREEN);
-            holder.removeButton();
-        }else{
-            holder.name.setTextColor(Color.YELLOW);
-            holder.removeButton();
-        }
+        holder.name.setText(mData.get(position).getName());
 
 
         // Using Glide Library to display the image
         GlideApp.with(mContext)
-                .load(mData.get(position).getImage())
+                .load("https://cdn-icons-png.flaticon.com/512/16/16363.png")
                 .into(holder.image);
 
         holder.addFriendBtn.setOnClickListener(new View.OnClickListener() {
@@ -78,16 +66,11 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
                 assert user != null;
                 String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                DatabaseReference mDatabase = database.getReference("friends_list").child(mData.get(pos).getUsername()).child(username);
-                mDatabase.setValue(false);
-
-                mDatabase = database.getReference("friends_list").child(username).child(mData.get(pos).getUsername());
-                mDatabase.setValue(true);
-
-
-                Toast.makeText(mContext, "Request sent!",Toast.LENGTH_SHORT).show();
+                database.getReference("friends_list").child(username).child(mData.get(pos).getName()).removeValue();
+                database.getReference("friends_list").child(mData.get(pos).getName()).child(username).removeValue();
+                Toast.makeText(mContext, "You've lost a friend :(",Toast.LENGTH_SHORT).show();
                 removeAt(pos);
+
             }
         });
 
@@ -112,6 +95,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
             addFriendBtn = itemView.findViewById(R.id.btn_addFriend);
 
 
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -125,15 +109,9 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
             });
 
         }
-        public void removeButton(){
-            ViewGroup layout = (ViewGroup) addFriendBtn.getParent();
-            if(null!=layout) //for safety only  as you are doing onClick
-                layout.removeView(addFriendBtn);
-
-        }
     }
 
-    public FriendModelClass getItem(int position){
+    public FriendRequestModelClass getItem(int position){
         return mData.get(position);
     }
 

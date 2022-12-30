@@ -2,8 +2,10 @@ package com.dinis.whatsnext;
 
 public class FriendModelClass {
     String username;
-
     String image;
+
+
+    String status;
 
     public FriendModelClass (String username, String image){
         this.username = username;
@@ -24,6 +26,15 @@ public class FriendModelClass {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public FriendModelClass setStatus(String status) {
+        this.status = status;
+        return this;
     }
 
 
