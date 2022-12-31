@@ -32,5 +32,8 @@
     <string name="accept_friend_requests">Accept Friend Requests</string>
     <string name="x">X</string>
     <string name="friend_list">Friend List</string>
+    <string name="create_group">Create group</string>
+    <string name="group_name">Group name</string>
+    <string name="confirm">Confirm</string>
 
 </resources>

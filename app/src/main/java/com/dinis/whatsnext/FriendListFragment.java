@@ -95,10 +95,6 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
 
         recyclerView = root.findViewById(R.id.recyclerViewAllFriends);
 
-
-
-
-
         assert user != null;
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
         fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

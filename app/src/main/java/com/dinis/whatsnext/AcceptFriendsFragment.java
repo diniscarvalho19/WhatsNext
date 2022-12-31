@@ -132,10 +132,8 @@ public class AcceptFriendsFragment extends Fragment implements RecyclerViewInter
                         }
                         PutDataIntoRecyclerViewFriends(everyoneList);
                     }
-
                 }
             }
-
         });
 
 
