@@ -84,6 +84,7 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_friend_list, container, false);
+        recyclerView = root.findViewById(R.id.recyclerViewAllFriends);
 
         //Initiate DB
         auth = FirebaseAuth.getInstance();
@@ -92,9 +93,6 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
         List<String> friendList = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference fDatabase = database.getReference("friends_list");
-
-        recyclerView = root.findViewById(R.id.recyclerViewAllFriends);
-
         assert user != null;
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
         fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

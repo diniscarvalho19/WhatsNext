@@ -86,15 +86,14 @@ public class AcceptFriendsFragment extends Fragment implements RecyclerViewInter
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_accept_friends, container, false);
 
+        recyclerView = root.findViewById(R.id.recyclerViewAccept);
+
         //Initiate DB
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         List<FriendRequestModelClass> everyoneList = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mDatabase = database.getReference("friends_list");
-        recyclerView = root.findViewById(R.id.recyclerViewAccept);
-
-        //Username
         assert user != null;
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
         mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
