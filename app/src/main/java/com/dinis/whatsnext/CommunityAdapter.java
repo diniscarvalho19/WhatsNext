@@ -118,6 +118,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
                     if (recyclerViewInterface!=null){
                         int position = getAdapterPosition();
                         if (position!= RecyclerView.NO_POSITION){
+                            Log.d("Groups",recyclerViewInterface + "" + position);
                             recyclerViewInterface.onItemClick(position);
                         }
                     }

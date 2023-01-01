@@ -36,5 +36,11 @@
     <string name="group_name">Group name</string>
     <string name="confirm">Confirm</string>
     <string name="create_group_2">Create Group</string>
+    <string name="group_name_title">Group Name</string>
+    <string name="users">users</string>
+    <string name="members_of_group">Members of Group</string>
+    <string name="recommended_movie">Recommended movie</string>
+    <string name="pick_a_movie">Pick a movie</string>
+    <string name="group_name_2">Group Name</string>
 
 </resources>

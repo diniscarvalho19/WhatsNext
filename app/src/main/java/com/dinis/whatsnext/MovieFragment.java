@@ -28,11 +28,11 @@ public class MovieFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    DB db;
+
     FirebaseAuth auth;
     FirebaseUser user;
-
     View root;
+
     Button addMovie;
     public MovieFragment() {
         // Required empty public constructor
@@ -60,13 +60,12 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        root =inflater.inflate(R.layout.fragment_movie, container, false);
+        root = inflater.inflate(R.layout.fragment_movie, container, false);
         Bundle bundle = this.getArguments();
         String image, title, id, loc;
         image = bundle.getString("cover");
         title = bundle.getString("title");
         id = bundle.getString("id");
-        loc = bundle.getString("loc");
         TextView textView = (TextView) root.findViewById(R.id.movieTitle);
         textView.setText(title);
 
@@ -77,18 +76,11 @@ public class MovieFragment extends Fragment {
         Glide.with(root)
                 .load(image)
                 .into(imageView);
-        db = DB.getInstance(getActivity());
         addMovie = (Button)root.findViewById(R.id.addMovie);
         addMovie.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                db.dao().insert(new MovieModelClass(id,title,image,loc));
-                for(MovieModelClass movie: db.dao().getAll()){
-                    System.out.println(movie.getName());
-                }
-
-
-                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+                                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("watchlist");
                 myRef.child(username).child(id).child("name").setValue(title);

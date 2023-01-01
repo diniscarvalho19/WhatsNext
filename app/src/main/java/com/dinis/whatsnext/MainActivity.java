@@ -1,37 +1,13 @@
 package com.dinis.whatsnext;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.Calendar;
-import java.util.Date;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -40,7 +16,7 @@ public class MainActivity extends AppCompatActivity{
     Fragment mainPageFragment = new MainPageFragment();
     Fragment profileFrag = new ProfileFragment();
     Fragment watchlistFrag = new WatchlistFragment();
-    Fragment groupFrag = new GroupsFragment();
+    Fragment groupFrag = new AllGroupsFragment();
     BottomNavigationView bottomNavigationView;
 
 

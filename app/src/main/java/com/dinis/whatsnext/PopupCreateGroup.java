@@ -1,5 +1,8 @@
 package com.dinis.whatsnext;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Debug;
 import android.util.Log;
@@ -15,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +48,17 @@ public class PopupCreateGroup implements RecyclerViewInterface {
     Button createGroup;
     FirebaseAuth auth;
     FirebaseUser user;
+    Fragment groupFrag = new AllGroupsFragment();
+
+    /*
+    public void refreshFrag(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainActivity, groupFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }*/
+
     public void showPopupWindow(final View view) {
 
         //Create a View object yourself through inflater
@@ -175,10 +188,20 @@ public class PopupCreateGroup implements RecyclerViewInterface {
 
                                                 DatabaseReference mDatabase = databaseFB.getReference("groups")
                                                         .child(username)
-                                                        .push()
                                                         .child(String.valueOf(groupName.getText()));
-
                                                 mDatabase.setValue(popupFriendlistAdapter.getGroupMembers());
+                                                ArrayList<String> members = popupFriendlistAdapter.getGroupMembers();
+                                                for(String name: members){
+                                                    ArrayList<String> membersCopy = new ArrayList<>(members);
+                                                    mDatabase = databaseFB.getReference("groups")
+                                                            .child(name)
+                                                            .child(String.valueOf(groupName.getText()));
+                                                    membersCopy.remove(name);
+                                                    membersCopy.add(username);
+                                                    mDatabase.setValue(membersCopy);
+                                                }
+
+                                                //refreshFrag();
                                             }
                                         });
 

@@ -1,12 +1,15 @@
 package com.dinis.whatsnext;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,13 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     private final Context context;
     private final ArrayList<GroupModel> groupModelArrayList;
     private final RecyclerViewInterface recyclerViewInterface;
     View view;
+    FirebaseAuth auth;
+    FirebaseUser user;
+
+
     public GroupAdapter(Context context, ArrayList<GroupModel> groupModelArrayList, RecyclerViewInterface recyclerViewInterface) {
         this.context = context;
         this.groupModelArrayList = groupModelArrayList;
@@ -36,9 +49,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
 
     @Override
     public void onBindViewHolder(@NonNull GroupAdapter.Viewholder holder, int position) {
+        int pos = position;
         GroupModel model = groupModelArrayList.get(position);
         holder.groupName.setText(model.getGroupName());
         holder.groupMembers.setText(model.getGroupMembers());
+        holder.recommendation.setText(model.getGroupMembers());
 
         ImageButton arrow;
         LinearLayout hiddenView;
@@ -46,6 +61,32 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         cardView = view.findViewById(R.id.base_cardview);
         arrow = view.findViewById(R.id.expand_button);
         hiddenView = view.findViewById(R.id.hidden_view);
+
+        holder.removeGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Initiate DB
+                auth = FirebaseAuth.getInstance();
+                user = auth.getCurrentUser();
+                assert user != null;
+                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                String[] members = model.getGroupMembers().split(", ");
+                DatabaseReference mDatabase = database.getReference("groups").child(username).child(model.getGroupName());
+                mDatabase.removeValue();
+
+                for(String m : members){
+                    mDatabase = database.getReference("groups").child(m).child(model.getGroupName());
+                    mDatabase.removeValue();
+                }
+
+
+                removeAt(pos);
+            }
+        });
+
+
 
         arrow.setOnClickListener(view -> {
             // If the CardView is already expanded, set its visibility
@@ -74,12 +115,29 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
-        TextView groupName;
-        TextView groupMembers;
+        TextView groupName, groupMembers, recommendation;
+        ImageButton removeGroup;
+
         public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             groupName = itemView.findViewById(R.id.group_title);
-            groupMembers= itemView.findViewById(R.id.group_members);
+            groupMembers = itemView.findViewById(R.id.group_members);
+            recommendation = itemView.findViewById(R.id.recommendation);
+            removeGroup = itemView.findViewById(R.id.leave_group);
         }
     }
+    public GroupModel getItem(int position){
+        return groupModelArrayList.get(position);
+    }
+
+    private void removeAt(int position) {
+        groupModelArrayList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, groupModelArrayList.size());
+    }
+
+    public String getId(String username, String title){
+        return "";
+    }
+
 }

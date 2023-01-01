@@ -59,7 +59,6 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
-    CommunityAdapter friendAdapter;
     SearchView searchView;
     FirebaseAuth auth;
     FirebaseUser user;
