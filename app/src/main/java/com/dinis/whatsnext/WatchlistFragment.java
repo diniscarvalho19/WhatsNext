@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dinis.whatsnext.TaskManager.TaskManager;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -131,9 +132,16 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int pos) {
 
     }
+
+
 
 
     @Override

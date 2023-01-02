@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.dinis.whatsnext.TaskManager.TaskManager;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Registration extends AppCompatActivity implements TaskManager.Callback {
@@ -67,7 +68,14 @@ public class Registration extends AppCompatActivity implements TaskManager.Callb
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int pos) {
 
     }
+
+
 }

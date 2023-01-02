@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,6 +86,11 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void onItemClick(int position) {
 
     }
@@ -98,5 +104,7 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
     public void removeAt(int pos) {
 
     }
+
+
 }
 

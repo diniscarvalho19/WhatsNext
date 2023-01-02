@@ -7,20 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
-import java.util.Objects;
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> implements TaskManager.Callback {
 
@@ -123,11 +116,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int position) {
         mData.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mData.size());
     }
+
 
 
 

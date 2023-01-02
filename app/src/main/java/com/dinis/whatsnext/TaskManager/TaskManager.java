@@ -50,7 +50,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -65,6 +67,7 @@ public class TaskManager {
     public interface Callback{
         void PutDataIntoRecyclerView(List<MovieModelClass> movieList);
         void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList);
+        void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList);
         void removeAt(int pos);
     }
 
@@ -606,6 +609,195 @@ public class TaskManager {
             database.getReference("friends_list").child(mData.get(pos).getName()).child(username).removeValue();
             handler.post(() ->{
                 callback.removeAt(pos);
+            });
+        });
+
+    }
+
+    public void executeCommunityNoFilter(Callback callback){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            List<FriendModelClass> everyoneList = new ArrayList<>();
+            List<String> friendList = new ArrayList<>();
+            List<String> pendingList = new ArrayList<>();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("users");
+            DatabaseReference fDatabase = database.getReference("friends_list");
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+            handler.post(() ->{
+                fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            if (task.getResult().getValue() != null) {
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] users = result.split("\\}, ");
+                                int size = users.length;
+                                int count = 1;
+                                for (String usr : users) {
+                                    if (count != size) {
+                                        usr = usr + "}";
+                                    }
+                                    count++;
+                                    String[] data = usr.split("=\\{");
+                                    String name = data[0];
+                                    data = Arrays.copyOfRange(data, 1, data.length);
+                                    if (!name.equals(username)) {
+                                        for (String st : data) {
+                                            st = st.substring(0, st.length() - 1);
+                                            for (String st2 : st.split(", ")) {
+                                                String usernameReq = st2.split("=")[0];
+                                                String status = st2.split("=")[1];
+                                                if (status.equals("false") && usernameReq.equals(username))
+                                                    pendingList.add(name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (task.getResult().getValue() != null) {
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] users = result.split("\\}, ");
+                                int size = users.length;
+                                int count = 1;
+                                for (String usr : users) {
+                                    if (count != size) {
+                                        usr = usr + "}";
+                                    }
+                                    count++;
+                                    String[] data = usr.split("=\\{");
+                                    String name = data[0];
+                                    data = Arrays.copyOfRange(data, 1, data.length);
+                                    if (!name.equals(username)) {
+                                        for (String st : data) {
+                                            st = st.substring(0, st.length() - 1);
+                                            for (String st2 : st.split(", ")) {
+                                                String usernameReq = st2.split("=")[0];
+                                                String status = st2.split("=")[1];
+                                                if (status.equals("true") && usernameReq.equals(username))
+                                                    friendList.add(name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                    if (!task.isSuccessful()) {
+                                        Log.e("firebase", "Error getting data", task.getException());
+                                    }
+                                    else {
+                                        if (task.getResult().getValue() != null){
+                                            String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                                            for(String usr: users){
+                                                String user_data = usr.replaceAll("\\{","");
+                                                String name = user_data.split("=")[0];
+                                                if(!name.equals(username)){
+                                                    if(pendingList.contains(name)){
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("pending"));
+                                                    }else if(friendList.contains(name)){
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("accepted"));
+                                                    }else{
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("not accepted"));
+                                                    }
+
+
+                                                }
+
+                                            }
+                                            callback.PutDataIntoRecyclerViewFriendsCommunity(everyoneList);
+                                        }
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+    }
+
+    public void executeCommunityWithFilter(Callback callback, String query){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            List<FriendModelClass> everyoneList = new ArrayList<>();
+            List<String> friendList = new ArrayList<>();
+            List<String> pendingList = new ArrayList<>();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("users");
+            DatabaseReference fDatabase = database.getReference("friends_list");
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+            handler.post(() ->{
+                fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            if (task.getResult().getValue() != null){
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] users = result.split("\\}, ");
+                                int size = users.length;
+                                int count = 1;
+                                for(String usr: users){
+                                    if (count != size){
+                                        usr = usr + "}";
+                                    }
+                                    count++;
+                                    String[] data = usr.split("=\\{");
+                                    String name = data[0];
+                                    data = Arrays.copyOfRange(data, 1, data.length);
+                                    if(name.equals(username)){
+                                        for(String st : data){
+                                            st = st.substring(0, st.length() - 1);
+                                            for(String st2 : st.split(", ")){
+                                                String usernameReq = st2.split("=")[0];
+                                                String status = st2.split("=")[1];
+                                                friendList.add(usernameReq);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            everyoneList.clear();
+                            mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                    if (!task.isSuccessful()) {
+                                        Log.e("firebase", "Error getting data", task.getException());
+                                    }
+                                    else {
+                                        if (task.getResult().getValue() != null){
+                                            String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                                            for(String usr: users){
+                                                String user_data = usr.replaceAll("\\{","");
+                                                String name = user_data.split("=")[0];
+                                                if(!name.equals(username) && name.contains(query) && !friendList.contains(name))
+                                                    everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
+                                            }
+                                            callback.PutDataIntoRecyclerViewFriendsCommunity(everyoneList);
+                                        }
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+                });
             });
         });
 

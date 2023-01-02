@@ -1,39 +1,25 @@
 package com.dinis.whatsnext;
 
-import android.os.Bundle;
-
 import android.app.Fragment;
-
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CommunityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CommunityFragment extends Fragment implements RecyclerViewInterface{
+public class CommunityFragment extends Fragment implements RecyclerViewInterface, TaskManager.Callback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,11 +31,11 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
     private String mParam2;
 
     View root;
-    FirebaseAuth auth;
-    FirebaseUser user;
     SearchView searchView;
     RecyclerView recyclerView;
     CommunityAdapter friendAdapter;
+    TaskManager.Callback callback;
+    TaskManager taskManager = new TaskManager();
 
 
     public CommunityFragment() {
@@ -88,185 +74,18 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_community, container, false);
 
-        //Initiate DB
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        List<FriendModelClass> everyoneList = new ArrayList<>();
-        List<String> friendList = new ArrayList<>();
-        List<String> pendingList = new ArrayList<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabase = database.getReference("users");
-        DatabaseReference fDatabase = database.getReference("friends_list");
-
         recyclerView = root.findViewById(R.id.recyclerView);
         searchView = root.findViewById(R.id.searchView);
+        callback = this;
 
-
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-        fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null) {
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] users = result.split("\\}, ");
-                        int size = users.length;
-                        int count = 1;
-                        for (String usr : users) {
-                            if (count != size) {
-                                usr = usr + "}";
-                            }
-                            count++;
-                            String[] data = usr.split("=\\{");
-                            String name = data[0];
-                            data = Arrays.copyOfRange(data, 1, data.length);
-                            if (!name.equals(username)) {
-                                for (String st : data) {
-                                    st = st.substring(0, st.length() - 1);
-                                    for (String st2 : st.split(", ")) {
-                                        String usernameReq = st2.split("=")[0];
-                                        String status = st2.split("=")[1];
-                                        if (status.equals("false") && usernameReq.equals(username))
-                                            pendingList.add(name);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (task.getResult().getValue() != null) {
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] users = result.split("\\}, ");
-                        int size = users.length;
-                        int count = 1;
-                        for (String usr : users) {
-                            if (count != size) {
-                                usr = usr + "}";
-                            }
-                            count++;
-                            String[] data = usr.split("=\\{");
-                            String name = data[0];
-                            data = Arrays.copyOfRange(data, 1, data.length);
-                            if (!name.equals(username)) {
-                                for (String st : data) {
-                                    st = st.substring(0, st.length() - 1);
-                                    for (String st2 : st.split(", ")) {
-                                        String usernameReq = st2.split("=")[0];
-                                        String status = st2.split("=")[1];
-                                        if (status.equals("true") && usernameReq.equals(username))
-                                            friendList.add(name);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            if (!task.isSuccessful()) {
-                                Log.e("firebase", "Error getting data", task.getException());
-                            }
-                            else {
-                                if (task.getResult().getValue() != null){
-                                    String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
-                                    for(String usr: users){
-                                        String user_data = usr.replaceAll("\\{","");
-                                        String name = user_data.split("=")[0];
-                                        if(!name.equals(username)){
-                                            if(pendingList.contains(name)){
-                                                everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("pending"));
-                                            }else if(friendList.contains(name)){
-                                                everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("accepted"));
-                                            }else{
-                                                everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("not accepted"));
-                                            }
-
-
-                                        }
-
-                                    }
-                                    PutDataIntoRecyclerViewFriends(everyoneList);
-                                }
-                            }
-
-                        }
-                    });
-                }
-            }
-        });
-
-
-
-
+        taskManager.executeCommunityNoFilter(this);
 
 
         searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
-                        }
-                        else {
-                            if (task.getResult().getValue() != null){
-                                String result = task.getResult().getValue().toString().substring(1);
-                                result = result.substring(0, result.length() - 1);
-                                String[] users = result.split("\\}, ");
-                                int size = users.length;
-                                int count = 1;
-                                for(String usr: users){
-                                    if (count != size){
-                                        usr = usr + "}";
-                                    }
-                                    count++;
-                                    String[] data = usr.split("=\\{");
-                                    String name = data[0];
-                                    data = Arrays.copyOfRange(data, 1, data.length);
-                                    if(name.equals(username)){
-                                        for(String st : data){
-                                            st = st.substring(0, st.length() - 1);
-                                            for(String st2 : st.split(", ")){
-                                                String usernameReq = st2.split("=")[0];
-                                                String status = st2.split("=")[1];
-                                                friendList.add(usernameReq);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            everyoneList.clear();
-                            mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                    if (!task.isSuccessful()) {
-                                        Log.e("firebase", "Error getting data", task.getException());
-                                    }
-                                    else {
-                                        if (task.getResult().getValue() != null){
-                                            String[] users = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
-                                            for(String usr: users){
-                                                String user_data = usr.replaceAll("\\{","");
-                                                String name = user_data.split("=")[0];
-                                                if(!name.equals(username) && name.contains(query) && !friendList.contains(name))
-                                                    everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
-                                            }
-                                            PutDataIntoRecyclerViewFriends(everyoneList);
-                                        }
-                                    }
-
-                                }
-                            });
-                        }
-                    }
-                });
+                taskManager.executeCommunityWithFilter(callback, query);
                 return true;
             }
 
@@ -279,7 +98,8 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
         return root;
     }
 
-    public void PutDataIntoRecyclerViewFriends(List<FriendModelClass> everyoneList){
+    @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList){
         friendAdapter = new CommunityAdapter(getActivity(), everyoneList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(friendAdapter);
@@ -288,6 +108,21 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
 
     @Override
     public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void removeAt(int pos) {
 
     }
 }
