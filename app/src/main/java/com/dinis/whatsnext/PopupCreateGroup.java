@@ -53,7 +53,7 @@ public class PopupCreateGroup implements RecyclerViewInterface {
 
 
 
-    public void showPopupWindow(final View view) {
+    public void showPopupWindow(final View view, AllGroupsFragment allGroupsFragment) {
 
         //Create a View object yourself through inflater
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
@@ -194,8 +194,6 @@ public class PopupCreateGroup implements RecyclerViewInterface {
                                                     membersCopy.add(username);
                                                     mDatabase.setValue(membersCopy);
                                                 }
-
-
                                             }
                                         });
 

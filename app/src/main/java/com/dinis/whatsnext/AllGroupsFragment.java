@@ -38,13 +38,10 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
     FirebaseUser user;
 
 
-
     View root;
     Button addGroup;
     RecyclerView recyclerView;
-
-
-
+    RecyclerViewInterface rvi;
 
 
     public AllGroupsFragment() {
@@ -73,10 +70,11 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        root =inflater.inflate(R.layout.fragment_groups, container, false);
+        AllGroupsFragment allGroupsFragment = this;
+        root = inflater.inflate(R.layout.fragment_groups, container, false);
 
         recyclerView = root.findViewById(R.id.group_recycler);
-        RecyclerViewInterface rvi = this;
+        rvi = this;
 
         ArrayList<GroupModel> groupModelArrayList = new ArrayList<>();
 
@@ -92,24 +90,23 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null){
+                } else {
+                    if (task.getResult().getValue() != null) {
                         String result = task.getResult().getValue().toString().substring(1);
                         result = result.substring(0, result.length() - 1);
-                        Log.d("Groups1",result);
-                        if(result.contains("], ")){
+                        Log.d("Groups1", result);
+                        if (result.contains("], ")) {
                             String[] groups = result.split("], ");
-                            for(String g: groups){
-                                Log.d("Groups1",g);
+                            for (String g : groups) {
+                                Log.d("Groups1", g);
                                 String tittle = g.split("=")[0];
-                                String userList = g.split("=")[1].replace("[","").replace("]","");
+                                String userList = g.split("=")[1].replace("[", "").replace("]", "");
                                 groupModelArrayList.add(new GroupModel(tittle, userList));
                             }
-                        }else{
-                            Log.d("Groups1",result);
+                        } else {
+                            Log.d("Groups1", result);
                             String tittle = result.split("=")[0];
-                            String userList = result.split("=")[1].replace("[","").replace("]","");
+                            String userList = result.split("=")[1].replace("[", "").replace("]", "");
                             groupModelArrayList.add(new GroupModel(tittle, userList));
                         }
 
@@ -126,12 +123,54 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
         });
 
         addGroup = root.findViewById(R.id.btn_create_group);
-        addGroup.setOnClickListener(new View.OnClickListener(){
+        addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupCreateGroup popupClass = new PopupCreateGroup((MainActivity)getActivity());
-                popupClass.showPopupWindow(view);
+                PopupCreateGroup popupClass = new PopupCreateGroup((MainActivity) getActivity());
+                popupClass.showPopupWindow(view, allGroupsFragment);
 
+            }
+        });
+        recyclerView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    DatabaseReference mDatabase = database.getReference("groups").child(username);
+                    mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            if (!task.isSuccessful()) {
+                                Log.e("firebase", "Error getting data", task.getException());
+                            } else {
+                                if (task.getResult().getValue() != null) {
+                                    String result = task.getResult().getValue().toString().substring(1);
+                                    result = result.substring(0, result.length() - 1);
+                                    Log.d("Groups1", result);
+                                    if (result.contains("], ")) {
+                                        String[] groups = result.split("], ");
+                                        for (String g : groups) {
+                                            Log.d("Groups1", g);
+                                            String tittle = g.split("=")[0];
+                                            String userList = g.split("=")[1].replace("[", "").replace("]", "");
+                                            groupModelArrayList.add(new GroupModel(tittle, userList));
+                                        }
+                                    } else {
+                                        Log.d("Groups1", result);
+                                        String tittle = result.split("=")[0];
+                                        String userList = result.split("=")[1].replace("[", "").replace("]", "");
+                                        groupModelArrayList.add(new GroupModel(tittle, userList));
+                                    }
+
+
+                                    GroupAdapter groupAdapter = new GroupAdapter(getActivity(), groupModelArrayList, rvi);
+                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                                    recyclerView.setLayoutManager(linearLayoutManager);
+                                    recyclerView.setAdapter(groupAdapter);
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -141,4 +180,5 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
     @Override
     public void onItemClick(int position) {
     }
+
 }

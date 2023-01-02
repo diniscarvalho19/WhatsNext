@@ -1,10 +1,7 @@
 package com.dinis.whatsnext;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.os.Debug;
+import android.media.Image;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,23 +31,32 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
-public class PopupCreateGroup implements RecyclerViewInterface {
+public class PopupMovieRecommedation implements RecyclerViewInterface {
 
-    public PopupCreateGroup(Context context) {
+    public PopupMovieRecommedation(Context context, ArrayList allMovies) {
         this.context = context;
+        this.allMovies = allMovies;
+
     }
 
     Context context;
 
     //PopupWindow display method
-    EditText groupName;
-    RecyclerView recyclerView;
-    Button createGroup;
+    TextView movieTitle;
+    ImageView movieCover;
+    ImageButton refreshRecommendation;
     FirebaseAuth auth;
     FirebaseUser user;
+    ArrayList<String> allMovies;
+    ArrayList<ArrayList<String>> res = new ArrayList<>();
 
 
 
@@ -57,7 +66,7 @@ public class PopupCreateGroup implements RecyclerViewInterface {
 
         //Create a View object yourself through inflater
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_group_create, null);
+        View popupView = inflater.inflate(R.layout.popup_movie_recommendation, null);
 
         //Specify the length and width through constants
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -73,148 +82,77 @@ public class PopupCreateGroup implements RecyclerViewInterface {
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
 
-        groupName = (EditText) popupView.findViewById(R.id.group_name_input);
-        recyclerView = (RecyclerView)popupView.findViewById(R.id.recycler_add_friend_to_group);
-        createGroup = (Button) popupView.findViewById(R.id.confirm_group);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        ArrayList<FriendModelClass> arrayList = new ArrayList<FriendModelClass>();
-
-        RecyclerViewInterface rvi = this;
+        movieTitle = (TextView) popupView.findViewById(R.id.movie_title_popup);
+        movieCover = (ImageView) popupView.findViewById(R.id.movie_cover_popup);
+        refreshRecommendation = (ImageButton) popupView.findViewById(R.id.refresh_recommendation);
+        ArrayList<String> recMovies = new ArrayList<>();
 
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        ArrayList<FriendModelClass> everyoneList = new ArrayList<>();
-        List<String> friendList = new ArrayList<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference fDatabase = database.getReference("friends_list");
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+        if(allMovies.isEmpty()){
+            String noWL = "Watchlist empty";
+            movieTitle.setText(noWL);
+        }else{
+            for(String movie : allMovies){
+                if(Collections.frequency(allMovies, movie) > 1){
+                    recMovies.add(movie);
+                }
+            }
+
+            if(recMovies.isEmpty()){
+                String noCommon = "No movies in common. Picking a random movie from all watchlists:";
+                //holder.recommendation_status.setText(noCommon);
+                ArrayList<String> allMoviesDistinct = new ArrayList<>(new HashSet<>(allMovies));
+                res = parseArrayListMovies(allMoviesDistinct);
+                //res = removeDuplicate(res);
+                movieTitle.setText(res.get(0).get(0));
+                Glide.with(popupView)
+                        .load(res.get(0).get(0))
+                        .into(movieCover);
+
+                //holder.recommendation.setText(allMoviesDistinct.get(new Random().nextInt(allMoviesDistinct.size())));
+            }else {
+                String common = "Movies in common: ";
+                //holder.recommendation_status.setText(common);
+                ArrayList<String> recMoviesDistinct = new ArrayList<>(new HashSet<>(recMovies));
+                res = parseArrayListMovies(recMoviesDistinct);
+               // res = removeDuplicate(res);
+                movieTitle.setText(res.get(0).get(0));
+                Glide.with(popupView)
+                      .load(res.get(0).get(0))
+                        .into(movieCover);
+
+            }
+
+        }
+
+        res.remove(0);
+        if(res.size()==0 || res==null){
+            refreshRecommendation.setAlpha(0.5f);
+            refreshRecommendation.setClickable(false);
+        }
 
 
-        fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        refreshRecommendation.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
+            public void onClick(View v) {
+                movieTitle.setText(res.get(0).get(0));
+                Glide.with(popupView)
+                        .load(res.get(0).get(0))
+                        .into(movieCover);
+                res.remove(0);
+                if(res.size()==0 || res==null){
+                    refreshRecommendation.setAlpha(0.5f);
+                    refreshRecommendation.setClickable(false);
                 }
-                else {
-                    if (task.getResult().getValue() != null){
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] users = result.split("\\}, ");
-                        int size = users.length;
-                        int count = 1;
-                        for(String usr: users){
-                            if (count != size){
-                                usr = usr + "}";
-                            }
-                            count++;
-                            String[] data = usr.split("=\\{");
-                            String name = data[0];
-                            data = Arrays.copyOfRange(data, 1, data.length);
-                            if(!name.equals(username)){
-                                for(String st : data){
-                                    st = st.substring(0, st.length() - 1);
-                                    for(String st2 : st.split(", ")){
-                                        String usernameReq = st2.split("=")[0];
-                                        String status = st2.split("=")[1];
-                                        if(status.equals("true") && usernameReq.equals(username))
-                                            friendList.add(name);
-                                    }
-                                }
-                            }
-                        }
-                        fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.e("firebase", "Error getting data", task.getException());
-                                }
-                                else {
-                                    if (task.getResult().getValue() != null){
-                                        String result = task.getResult().getValue().toString().substring(1);
-                                        result = result.substring(0, result.length() - 1);
-                                        String[] users = result.split("\\}, ");
-                                        int size = users.length;
-                                        int count = 1;
-                                        for(String usr: users){
-                                            if (count != size){
-                                                usr = usr + "}";
-                                            }
-                                            count++;
-                                            String[] data = usr.split("=\\{");
-                                            String name = data[0];
-                                            data = Arrays.copyOfRange(data, 1, data.length);
-                                            if(name.equals(username)){
-                                                for(String st : data){
-                                                    st = st.substring(0, st.length() - 1);
-                                                    for(String st2 : st.split(", ")){
-                                                        String usernameReq = st2.split("=")[0];
-                                                        String status = st2.split("=")[1];
-                                                        if(status.equals("true") && friendList.contains(usernameReq))
-                                                            everyoneList.add(new FriendModelClass(usernameReq,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        PopupFriendlistAdapter popupFriendlistAdapter = new PopupFriendlistAdapter(context, everyoneList, rvi);
-                                        recyclerView.setLayoutManager(linearLayoutManager);
-                                        recyclerView.setAdapter(popupFriendlistAdapter);
+            }
+        });
 
-
-                                        createGroup.setOnClickListener(new View.OnClickListener(){
-                                            @Override
-                                            public void onClick(View view) {
-                                                popupWindow.dismiss();
-                                                Toast toast = Toast.makeText(context,"Group created",Toast.LENGTH_SHORT);
-                                                toast.setMargin(50,50);
-                                                toast.show();
-                                                //Create Group in DB
-                                                //Initiate DB
-                                                auth = FirebaseAuth.getInstance();
-                                                user = auth.getCurrentUser();
-                                                assert user != null;
-                                                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                                                FirebaseDatabase databaseFB = FirebaseDatabase.getInstance();
-
-                                                DatabaseReference mDatabase = databaseFB.getReference("groups")
-                                                        .child(username)
-                                                        .child(String.valueOf(groupName.getText()));
-                                                mDatabase.setValue(popupFriendlistAdapter.getGroupMembers());
-
-                                                ArrayList<String> members = popupFriendlistAdapter.getGroupMembers();
-                                                for(String name: members){
-                                                    ArrayList<String> membersCopy = new ArrayList<>(members);
-                                                    mDatabase = databaseFB.getReference("groups")
-                                                            .child(name)
-                                                            .child(String.valueOf(groupName.getText()));
-                                                    membersCopy.remove(name);
-                                                    membersCopy.add(username);
-                                                    mDatabase.setValue(membersCopy);
-                                                }
-
-
-                                            }
-                                        });
-
-                                        //Handler for clicking on the inactive zone of the window
-                                        popupView.setOnTouchListener(new View.OnTouchListener() {
-                                            @Override
-                                            public boolean onTouch(View v, MotionEvent event) {
-
-                                                //Close the window when clicked
-                                                popupWindow.dismiss();
-                                                return true;
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //Close the window when clicked
+                popupWindow.dismiss();
+                return true;
             }
         });
 
@@ -226,4 +164,46 @@ public class PopupCreateGroup implements RecyclerViewInterface {
     public void onItemClick(int position) {
 
     }
+
+    public ArrayList<ArrayList<String>> parseArrayListMovies(ArrayList<String> recMovies){
+       Hashtable<String, ArrayList<String>> resMovies = new Hashtable<String, ArrayList<String>>();
+
+        for(String input: recMovies){
+            String[] parts = input.split("[{,]");
+            ArrayList<String> currentMovie = new ArrayList<>();
+// Initialize the img and name variables
+            String img = "";
+            String name = "";
+            String id ="";
+// Loop through the parts array
+            for (String part : parts) {
+                // If the part starts with "img="
+                System.out.println(part);
+                if(part.startsWith("tt")){
+                    id = part.substring(0, part.length()-1);
+                }
+                if (part.startsWith("img=")) {
+                    // Extract the value of the img parameter
+                    img = part.substring(4);
+                } else if (part.startsWith(" name=")) {
+                    // Extract the value of the name parameter
+                    name = part.substring(6);
+                    name = name.substring(0, name.length() - 1);
+                }
+            }
+            currentMovie.add(name);
+            currentMovie.add(img);
+            resMovies.put(id, currentMovie);
+        }
+
+
+        ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
+        Enumeration<ArrayList<String>> elements = resMovies.elements();
+        while (elements.hasMoreElements()) {
+            values.add(elements.nextElement());
+        }
+
+        return values;
+    }
+
 }

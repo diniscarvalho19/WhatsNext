@@ -85,7 +85,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
 
         List<MovieModelClass> movieList = new ArrayList<>();
 
-       taskManager.executeGetWatchlist(this);
+        taskManager.executeGetWatchlist(this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override

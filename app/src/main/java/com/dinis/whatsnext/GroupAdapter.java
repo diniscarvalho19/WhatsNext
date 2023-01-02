@@ -66,7 +66,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         GroupModel model = groupModelArrayList.get(position);
         holder.groupName.setText(model.getGroupName());
         holder.groupMembers.setText(model.getGroupMembers());
-        holder.recommendation.setText(null);
+
 
         ImageButton arrow;
         LinearLayout hiddenView;
@@ -98,6 +98,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                 removeAt(pos);
             }
         });
+        ArrayList<String> allMovies = new ArrayList<>();
 
         //Initiate DB
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -110,7 +111,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                 }
                 else {
                     if (task.getResult().getValue() != null){
-                        ArrayList<String> allMovies = new ArrayList<>();
                         ArrayList<String> recMovies = new ArrayList<>();
                         String result = task.getResult().getValue().toString().substring(1);
                         result = result.substring(0, result.length() - 1);
@@ -127,13 +127,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                                         id = (id + "}").replace("}}","}");
                                         allMovies.add(id);
                                     }
-
                                 }
                             }
-
-
                         }
-
                         if(allMovies.isEmpty()){
                             String noWL = "Watchlist empty";
                             holder.recommendation_status.setText(noWL);
@@ -147,12 +143,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                                 String noCommon = "No movies in common. Picking a random movie from all watchlists:";
                                 holder.recommendation_status.setText(noCommon);
                                 List<String> allMoviesDistinct = new ArrayList<>(new HashSet<>(allMovies));
-                                holder.recommendation.setText(allMoviesDistinct.get(new Random().nextInt(allMoviesDistinct.size())));
                             }else {
                                 String common = "Movies in common: ";
                                 holder.recommendation_status.setText(common);
                                 List<String> recMoviesDistinct = new ArrayList<>(new HashSet<>(recMovies));
-                                holder.recommendation.setText(recMoviesDistinct.toString());
 
                             }
 
@@ -162,10 +156,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                 }
             }
         });
-
-
-
-
 
         arrow.setOnClickListener(view -> {
             // If the CardView is already expanded, set its visibility
@@ -186,6 +176,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                 arrow.setImageResource(R.drawable.ic_baseline_expand_less_24);
             }
         });
+
+        holder.chooseMovie.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMovieRecommedation popupClass = new PopupMovieRecommedation(context, allMovies);
+                popupClass.showPopupWindow(view);
+
+            }
+        });
+
     }
 
     @Override
@@ -195,15 +195,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
 
     public static class Viewholder extends RecyclerView.ViewHolder {
         TextView groupName, groupMembers, recommendation, recommendation_status;
+        Button chooseMovie;
         ImageButton removeGroup;
 
         public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             groupName = itemView.findViewById(R.id.group_title);
             groupMembers = itemView.findViewById(R.id.group_members);
-            recommendation = itemView.findViewById(R.id.recommendation);
             recommendation_status = itemView.findViewById(R.id.recommendation_status);
             removeGroup = itemView.findViewById(R.id.leave_group);
+            chooseMovie = itemView.findViewById(R.id.choose_movie);
         }
     }
     public GroupModel getItem(int position){

@@ -32,7 +32,6 @@ public class TaskManager {
     FirebaseUser user;
 
 
-
     public interface Callback{
         void PutDataIntoRecyclerView(List<MovieModelClass> movieList);
     }
@@ -40,6 +39,7 @@ public class TaskManager {
 
 
     public void executeGetWatchlist(Callback callback){
+
         executor.execute(() -> {
             //Initiate FB
             auth = FirebaseAuth.getInstance();
@@ -82,6 +82,7 @@ public class TaskManager {
 
                     }
                 });
+
 
             });
         });
