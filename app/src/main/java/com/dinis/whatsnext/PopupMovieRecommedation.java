@@ -124,8 +124,9 @@ public class PopupMovieRecommedation implements RecyclerViewInterface {
             }
 
         }
-
-        res.remove(0);
+        if(res.size()>0){
+            res.remove(0);
+        }
         if(res.size()==0 || res==null){
             refreshRecommendation.setAlpha(0.5f);
             refreshRecommendation.setClickable(false);
@@ -135,11 +136,12 @@ public class PopupMovieRecommedation implements RecyclerViewInterface {
         refreshRecommendation.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(res.size()>0){
                 movieTitle.setText(res.get(0).get(0));
                 Glide.with(popupView)
                         .load(res.get(0).get(0))
                         .into(movieCover);
-                res.remove(0);
+                res.remove(0);}
                 if(res.size()==0 || res==null){
                     refreshRecommendation.setAlpha(0.5f);
                     refreshRecommendation.setClickable(false);
