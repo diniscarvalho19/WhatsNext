@@ -48,16 +48,10 @@ public class PopupCreateGroup implements RecyclerViewInterface {
     Button createGroup;
     FirebaseAuth auth;
     FirebaseUser user;
-    Fragment groupFrag = new AllGroupsFragment();
 
-    /*
-    public void refreshFrag(){
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainActivity, groupFrag);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }*/
+
+
+
 
     public void showPopupWindow(final View view) {
 
@@ -88,8 +82,7 @@ public class PopupCreateGroup implements RecyclerViewInterface {
 
         RecyclerViewInterface rvi = this;
 
-        //TODO: FRIEND LIST
-        //Initiate DB
+
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         ArrayList<FriendModelClass> everyoneList = new ArrayList<>();
@@ -202,7 +195,7 @@ public class PopupCreateGroup implements RecyclerViewInterface {
                                                     mDatabase.setValue(membersCopy);
                                                 }
 
-                                                //refreshFrag();
+
                                             }
                                         });
 

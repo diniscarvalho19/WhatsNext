@@ -1,5 +1,7 @@
 package com.dinis.whatsnext;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -49,6 +51,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         this.groupModelArrayList = groupModelArrayList;
         this.recyclerViewInterface = recyclerViewInterface;
     }
+
 
     @NonNull
     @Override
@@ -206,6 +209,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     public GroupModel getItem(int position){
         return groupModelArrayList.get(position);
     }
+
+
 
     private void removeAt(int position) {
         groupModelArrayList.remove(position);

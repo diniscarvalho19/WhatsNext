@@ -37,9 +37,13 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
     FirebaseAuth auth;
     FirebaseUser user;
 
+
+
     View root;
     Button addGroup;
     RecyclerView recyclerView;
+
+
 
 
 
@@ -127,6 +131,7 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
             public void onClick(View view) {
                 PopupCreateGroup popupClass = new PopupCreateGroup((MainActivity)getActivity());
                 popupClass.showPopupWindow(view);
+
             }
         });
 
