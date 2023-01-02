@@ -88,14 +88,6 @@
             android:textColor="#000000"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/recommendation"
-            style='@style/TextTitle'
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/recommended_movie" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -70,7 +70,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 // this method is called
-                // when the item is moved.
+                // when the item  is moved.
                 return false;
             }
 
