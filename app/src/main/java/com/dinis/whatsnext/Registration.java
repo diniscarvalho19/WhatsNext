@@ -62,6 +62,11 @@ public class Registration extends AppCompatActivity implements TaskManager.Callb
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int pos) {
 
     }
