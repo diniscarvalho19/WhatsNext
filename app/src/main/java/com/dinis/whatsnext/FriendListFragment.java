@@ -1,37 +1,24 @@
 package com.dinis.whatsnext;
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
 import android.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.dinis.whatsnext.TaskManager.TaskManager;
+
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FriendListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendListFragment extends Fragment implements RecyclerViewInterface{
+public class FriendListFragment extends Fragment implements RecyclerViewInterface, TaskManager.Callback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,10 +30,9 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
     private String mParam2;
 
     View root;
-    FirebaseAuth auth;
-    FirebaseUser user;
     RecyclerView recyclerView;
     FriendListAdapter friendAdapter;
+    TaskManager taskManager = new TaskManager();
 
     public FriendListFragment() {
         // Required empty public constructor
@@ -86,101 +72,12 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
         root = inflater.inflate(R.layout.fragment_friend_list, container, false);
         recyclerView = root.findViewById(R.id.recyclerViewAllFriends);
 
-        //Initiate DB
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        List<FriendRequestModelClass> everyoneList = new ArrayList<>();
-        List<String> friendList = new ArrayList<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference fDatabase = database.getReference("friends_list");
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-        fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null){
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] users = result.split("\\}, ");
-                        int size = users.length;
-                        int count = 1;
-                        for(String usr: users){
-                            if (count != size){
-                                usr = usr + "}";
-                            }
-                            count++;
-                            String[] data = usr.split("=\\{");
-                            String name = data[0];
-                            data = Arrays.copyOfRange(data, 1, data.length);
-                            if(!name.equals(username)){
-                                for(String st : data){
-                                    st = st.substring(0, st.length() - 1);
-                                    for(String st2 : st.split(", ")){
-                                        String usernameReq = st2.split("=")[0];
-                                        String status = st2.split("=")[1];
-                                        if(status.equals("true") && usernameReq.equals(username))
-                                            friendList.add(name);
-                                    }
-                                }
-                            }
-                        }
-                        fDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.e("firebase", "Error getting data", task.getException());
-                                }
-                                else {
-                                    if (task.getResult().getValue() != null){
-                                        String result = task.getResult().getValue().toString().substring(1);
-                                        result = result.substring(0, result.length() - 1);
-                                        String[] users = result.split("\\}, ");
-                                        int size = users.length;
-                                        int count = 1;
-                                        for(String usr: users){
-                                            if (count != size){
-                                                usr = usr + "}";
-                                            }
-                                            count++;
-                                            String[] data = usr.split("=\\{");
-                                            String name = data[0];
-                                            data = Arrays.copyOfRange(data, 1, data.length);
-                                            if(name.equals(username)){
-                                                for(String st : data){
-                                                    st = st.substring(0, st.length() - 1);
-                                                    for(String st2 : st.split(", ")){
-                                                        String usernameReq = st2.split("=")[0];
-                                                        String status = st2.split("=")[1];
-                                                        if(status.equals("true") && friendList.contains(usernameReq))
-                                                            everyoneList.add(new FriendRequestModelClass(usernameReq,true));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        PutDataIntoRecyclerViewFriends(everyoneList);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-
-
-
-
-
-
+        taskManager.executeGetFriendList(this);
 
         return root;
     }
 
+    @Override
     public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList){
         friendAdapter = new FriendListAdapter(getActivity(), everyoneList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -189,6 +86,16 @@ public class FriendListFragment extends Fragment implements RecyclerViewInterfac
 
     @Override
     public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
+
+    }
+
+    @Override
+    public void removeAt(int pos) {
 
     }
 }

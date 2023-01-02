@@ -216,6 +216,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> 
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int position) {
         groupModelArrayList.remove(position);
         notifyItemRemoved(position);

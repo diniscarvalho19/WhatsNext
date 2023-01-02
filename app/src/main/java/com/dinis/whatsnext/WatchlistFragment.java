@@ -126,6 +126,11 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
     }
 
     @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
     public void removeAt(int pos) {
 
     }

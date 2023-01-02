@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dinis.whatsnext.TaskManager.TaskManager;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -20,13 +22,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 import java.util.Objects;
 
-public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> {
+public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> implements TaskManager.Callback {
 
     private final RecyclerViewInterface recyclerViewInterface;
     private final Context mContext;
     private final List<FriendRequestModelClass> mData;
-    FirebaseAuth auth;
-    FirebaseUser user;
+    TaskManager taskManager = new TaskManager();
+    TaskManager.Callback callback;
+    View v;
 
 
     public FriendListAdapter(Context mContext, List<FriendRequestModelClass> mData, RecyclerViewInterface recyclerViewInterface) {
@@ -38,9 +41,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         v = inflater.inflate(R.layout.unfriend_item, parent, false);
+        callback = this;
         return new MyViewHolder(v, recyclerViewInterface);
     }
 
@@ -57,19 +60,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
                 .load("https://cdn-icons-png.flaticon.com/512/16/16363.png")
                 .into(holder.image);
 
+
+
         holder.addFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Initiate DB
-                auth = FirebaseAuth.getInstance();
-                user = auth.getCurrentUser();
-                assert user != null;
-                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                database.getReference("friends_list").child(username).child(mData.get(pos).getName()).removeValue();
-                database.getReference("friends_list").child(mData.get(pos).getName()).child(username).removeValue();
-                Toast.makeText(mContext, "You've lost a friend :(",Toast.LENGTH_SHORT).show();
-                removeAt(pos);
+
+                taskManager.executeRemoveFriend(pos, mData, callback);
 
             }
         });
@@ -115,7 +112,18 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         return mData.get(position);
     }
 
-    private void removeAt(int position) {
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void removeAt(int position) {
         mData.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mData.size());
