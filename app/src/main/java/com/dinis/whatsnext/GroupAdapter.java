@@ -1,10 +1,6 @@
 package com.dinis.whatsnext;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,39 +8,25 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> implements TaskManager.Callback {
     private final Context context;
     private final ArrayList<GroupModel> groupModelArrayList;
     private final RecyclerViewInterface recyclerViewInterface;
     View view;
-    FirebaseAuth auth;
-    FirebaseUser user;
     TaskManager taskManager = new TaskManager();
     TaskManager.Callback callback;
 
@@ -81,79 +63,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> 
         String[] members = model.getGroupMembers().split(", ");
         List<String> membersArray = new ArrayList<>(Arrays.asList(members));
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-
-        membersArray.add(username);
+        membersArray = taskManager.executeUpdateMembers(membersArray);
 
         holder.removeGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskManager.executeRemoveGroup(username, model, members, callback, pos);
+                taskManager.executeRemoveGroup(model, members, callback, pos);
             }
         });
-        ArrayList<String> allMovies = new ArrayList<>();
 
-
-
-        //Initiate DB
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabase = database.getReference("watchlist");
-        mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null){
-                        ArrayList<String> recMovies = new ArrayList<>();
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] userData = result.split("\\}\\}, ");
-                        for(String ud : userData){
-                            String[] udSplit = ud.split("\\{", 2);
-                            String name = udSplit[0].replace("=","");
-                            udSplit = Arrays.copyOfRange(udSplit, 1, udSplit.length);
-                            if(membersArray.contains(name)){
-                                for (String ids : udSplit){
-                                    ids = (ids + "}").replace("}}}","}");
-                                    String[] idsSplit = ids.split("\\}, ");
-                                    for (String id : idsSplit){
-                                        id = (id + "}").replace("}}","}");
-                                        allMovies.add(id);
-                                    }
-                                }
-                            }
-                        }
-                        if(allMovies.isEmpty()){
-                            String noWL = "Watchlist empty";
-                            holder.recommendation_status.setText(noWL);
-                        }else{
-                            for(String movie : allMovies){
-                                if(Collections.frequency(allMovies, movie) > 1){
-                                    recMovies.add(movie);
-                                }
-                            }
-                            if(recMovies.isEmpty()){
-                                String noCommon = "No movies in common. Picking a random movie from all watchlists:";
-                                holder.recommendation_status.setText(noCommon);
-                                List<String> allMoviesDistinct = new ArrayList<>(new HashSet<>(allMovies));
-                            }else {
-                                String common = "Movies in common: ";
-                                holder.recommendation_status.setText(common);
-                                List<String> recMoviesDistinct = new ArrayList<>(new HashSet<>(recMovies));
-
-                            }
-
-                        }
-
-                    }
-                }
-            }
-        });
 
         arrow.setOnClickListener(view -> {
             // If the CardView is already expanded, set its visibility
@@ -175,6 +93,36 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> 
             }
         });
 
+
+
+        taskManager.executeGenRecommendations(membersArray,holder,callback);
+
+
+
+
+    }
+
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull Viewholder holder) {
+        if(allMovies.isEmpty()){
+            String noWL = "Watchlist empty";
+            holder.recommendation_status.setText(noWL);
+        }else{
+            for(String movie : allMovies){
+                if(Collections.frequency(allMovies, movie) > 1){
+                    recMovies.add(movie);
+                }
+            }
+            if(recMovies.isEmpty()){
+                String noCommon = "No movies in common. Picking a random movie from all watchlists:";
+                holder.recommendation_status.setText(noCommon);
+            }else {
+                String common = "Movies in common: ";
+                holder.recommendation_status.setText(common);
+
+            }
+
+        }
         holder.chooseMovie.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +131,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> 
 
             }
         });
-
     }
 
     @Override

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> implements TaskManager.Callback {
@@ -127,7 +128,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         notifyItemRangeChanged(position, mData.size());
     }
 
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
 
+    }
 
 
 }

@@ -69,6 +69,7 @@ public class TaskManager {
         void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList);
         void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList);
         void removeAt(int pos);
+        void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder);
     }
 
 
@@ -480,11 +481,14 @@ public class TaskManager {
 
     }
 
-    public void executeRemoveGroup(String username, GroupModel model, String[] members, Callback callback, int pos){
+    public void executeRemoveGroup(GroupModel model, String[] members, Callback callback, int pos){
         executor.execute(() -> {
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = auth.getCurrentUser();
+            FirebaseUser user = auth.getCurrentUser();
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+
 
             //Initiate DB
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -501,6 +505,23 @@ public class TaskManager {
 
             });
         });
+    }
+
+    public List<String> executeUpdateMembers(List<String> membersArray){
+        executor.execute(() -> {
+
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+
+
+            handler.post(() ->{
+                membersArray.add(username);
+
+            });
+        });
+        return membersArray;
 
     }
 
@@ -795,6 +816,50 @@ public class TaskManager {
 
                                 }
                             });
+                        }
+                    }
+                });
+            });
+        });
+
+    }
+
+    public void executeGenRecommendations(List<String> membersArray, @NonNull GroupAdapter.Viewholder holder, Callback callback){
+        executor.execute(() -> {
+            ArrayList<String> allMovies = new ArrayList<>();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("watchlist");
+            handler.post(() ->{
+                mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            if (task.getResult().getValue() != null){
+                                ArrayList<String> recMovies = new ArrayList<>();
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] userData = result.split("\\}\\}, ");
+                                for(String ud : userData){
+                                    String[] udSplit = ud.split("\\{", 2);
+                                    String name = udSplit[0].replace("=","");
+                                    udSplit = Arrays.copyOfRange(udSplit, 1, udSplit.length);
+                                    if(membersArray.contains(name)){
+                                        for (String ids : udSplit){
+                                            ids = (ids + "}").replace("}}}","}");
+                                            String[] idsSplit = ids.split("\\}, ");
+                                            for (String id : idsSplit){
+                                                id = (id + "}").replace("}}","}");
+                                                allMovies.add(id);
+                                            }
+                                        }
+                                    }
+                                }
+                                callback.recHelper(recMovies, allMovies, holder);
+
+                            }
                         }
                     }
                 });

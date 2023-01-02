@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
@@ -74,6 +75,11 @@ public class Registration extends AppCompatActivity implements TaskManager.Callb
 
     @Override
     public void removeAt(int pos) {
+
+    }
+
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
 
     }
 

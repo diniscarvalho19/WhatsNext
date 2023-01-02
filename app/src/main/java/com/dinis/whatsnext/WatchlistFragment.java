@@ -141,7 +141,10 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
 
     }
 
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
 
+    }
 
 
     @Override

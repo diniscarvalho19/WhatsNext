@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dinis.whatsnext.TaskManager.TaskManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -123,6 +125,11 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
 
     @Override
     public void removeAt(int pos) {
+
+    }
+
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
 
     }
 }
