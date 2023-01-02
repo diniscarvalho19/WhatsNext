@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.dinis.whatsnext.TaskManager.TaskManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,19 +38,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder> implements TaskManager.Callback {
     private final Context context;
     private final ArrayList<GroupModel> groupModelArrayList;
     private final RecyclerViewInterface recyclerViewInterface;
     View view;
     FirebaseAuth auth;
     FirebaseUser user;
+    TaskManager taskManager = new TaskManager();
+    TaskManager.Callback callback;
 
 
     public GroupAdapter(Context context, ArrayList<GroupModel> groupModelArrayList, RecyclerViewInterface recyclerViewInterface) {
         this.context = context;
         this.groupModelArrayList = groupModelArrayList;
         this.recyclerViewInterface = recyclerViewInterface;
+        callback = this;
     }
 
 
@@ -83,21 +87,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
 
         membersArray.add(username);
+
         holder.removeGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Initiate DB
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference mDatabase = database.getReference("groups").child(username).child(model.getGroupName());
-                mDatabase.removeValue();
-
-                for(String m : members){
-                    mDatabase = database.getReference("groups").child(m).child(model.getGroupName());
-                    mDatabase.removeValue();
-                }
-                removeAt(pos);
+                taskManager.executeRemoveGroup(username, model, members, callback, pos);
             }
         });
+
+
 
         //Initiate DB
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -211,8 +209,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     }
 
 
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
 
-    private void removeAt(int position) {
+    }
+
+    @Override
+    public void removeAt(int position) {
         groupModelArrayList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, groupModelArrayList.size());

@@ -2,12 +2,9 @@ package com.dinis.whatsnext;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,24 +12,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.dinis.whatsnext.TaskManager.TaskManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class WatchlistFragment extends Fragment implements RecyclerViewInterface, TaskManager.Callback{
@@ -42,10 +25,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
 
     private String mParam1;
     private String mParam2;
-    DB db;
-    FirebaseAuth auth;
-    FirebaseUser user;
-
+    TaskManager.Callback callback;
     View root;
     RecyclerView recyclerView;
     MovieAdapter adapter;
@@ -80,12 +60,11 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         // Inflate the layout for this fragment
         root =inflater.inflate(R.layout.fragment_watchlist, container, false);
         TextView textView = (TextView) root.findViewById(R.id.textView);
-        db = DB.getInstance(getActivity());
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        List<MovieModelClass> movieList = new ArrayList<>();
+        List<MovieModelClass> movieList;
 
-       taskManager.executeGetWatchlist(this);
+        movieList = taskManager.executeGetWatchlist(this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -109,12 +88,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                 // below line is to remove item from our array list.
                 movieList.remove(viewHolder.getAdapterPosition());
 
-                //delete
-                assert user != null;
-                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference mDatabase = database.getReference("watchlist");
-                mDatabase.child(username).child(deletedMovie.getId()).removeValue();
+                taskManager.executeDeleteMovie(deletedMovie, callback);
 
 
 
@@ -131,12 +105,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                         movieList.add(position, deletedMovie);
 
 
-                        //undo
-                        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("watchlist");
-                        myRef.child(username).child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
-                        myRef.child(username).child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
+                        taskManager.executeUnDeleteMovie(deletedMovie,callback);
 
                         // below line is to notify item is
                         // added to our adapter class.
@@ -155,6 +124,12 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         recyclerView.setLayoutManager(new LinearLayoutManager((MainActivity)getActivity()));
         recyclerView.setAdapter(adapter);
     }
+
+    @Override
+    public void removeAt(int pos) {
+
+    }
+
 
     @Override
     public void onItemClick(int position) {
