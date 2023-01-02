@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +86,7 @@ public class MovieFragment extends Fragment {
                 DatabaseReference myRef = database.getReference("watchlist");
                 myRef.child(username).child(id).child("name").setValue(title);
                 myRef.child(username).child(id).child("img").setValue(image);
+                Toast.makeText(getContext(), "Movie added!", Toast.LENGTH_SHORT).show();
 
 
 

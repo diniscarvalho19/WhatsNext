@@ -1,6 +1,7 @@
 package com.dinis.whatsnext;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +14,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     private final Context context;
@@ -53,7 +63,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         GroupModel model = groupModelArrayList.get(position);
         holder.groupName.setText(model.getGroupName());
         holder.groupMembers.setText(model.getGroupMembers());
-        holder.recommendation.setText(model.getGroupMembers());
+        holder.recommendation.setText(null);
 
         ImageButton arrow;
         LinearLayout hiddenView;
@@ -61,18 +71,20 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
         cardView = view.findViewById(R.id.base_cardview);
         arrow = view.findViewById(R.id.expand_button);
         hiddenView = view.findViewById(R.id.hidden_view);
+        String[] members = model.getGroupMembers().split(", ");
+        List<String> membersArray = new ArrayList<>(Arrays.asList(members));
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        assert user != null;
+        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+
+        membersArray.add(username);
         holder.removeGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Initiate DB
-                auth = FirebaseAuth.getInstance();
-                user = auth.getCurrentUser();
-                assert user != null;
-                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                String[] members = model.getGroupMembers().split(", ");
                 DatabaseReference mDatabase = database.getReference("groups").child(username).child(model.getGroupName());
                 mDatabase.removeValue();
 
@@ -80,11 +92,75 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
                     mDatabase = database.getReference("groups").child(m).child(model.getGroupName());
                     mDatabase.removeValue();
                 }
-
-
                 removeAt(pos);
             }
         });
+
+        //Initiate DB
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabase = database.getReference("watchlist");
+        mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    if (task.getResult().getValue() != null){
+                        ArrayList<String> allMovies = new ArrayList<>();
+                        ArrayList<String> recMovies = new ArrayList<>();
+                        String result = task.getResult().getValue().toString().substring(1);
+                        result = result.substring(0, result.length() - 1);
+                        String[] userData = result.split("\\}\\}, ");
+                        for(String ud : userData){
+                            String[] udSplit = ud.split("\\{", 2);
+                            String name = udSplit[0].replace("=","");
+                            udSplit = Arrays.copyOfRange(udSplit, 1, udSplit.length);
+                            if(membersArray.contains(name)){
+                                for (String ids : udSplit){
+                                    ids = (ids + "}").replace("}}}","}");
+                                    String[] idsSplit = ids.split("\\}, ");
+                                    for (String id : idsSplit){
+                                        id = (id + "}").replace("}}","}");
+                                        allMovies.add(id);
+                                    }
+
+                                }
+                            }
+
+
+                        }
+
+                        if(allMovies.isEmpty()){
+                            String noWL = "Watchlist empty";
+                            holder.recommendation_status.setText(noWL);
+                        }else{
+                            for(String movie : allMovies){
+                                if(Collections.frequency(allMovies, movie) > 1){
+                                    recMovies.add(movie);
+                                }
+                            }
+                            if(recMovies.isEmpty()){
+                                String noCommon = "No movies in common. Picking a random movie from all watchlists:";
+                                holder.recommendation_status.setText(noCommon);
+                                List<String> allMoviesDistinct = new ArrayList<>(new HashSet<>(allMovies));
+                                holder.recommendation.setText(allMoviesDistinct.get(new Random().nextInt(allMoviesDistinct.size())));
+                            }else {
+                                String common = "Movies in common: ";
+                                holder.recommendation_status.setText(common);
+                                List<String> recMoviesDistinct = new ArrayList<>(new HashSet<>(recMovies));
+                                holder.recommendation.setText(recMoviesDistinct.toString());
+
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        });
+
+
 
 
 
@@ -115,7 +191,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
-        TextView groupName, groupMembers, recommendation;
+        TextView groupName, groupMembers, recommendation, recommendation_status;
         ImageButton removeGroup;
 
         public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
@@ -123,6 +199,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.Viewholder>{
             groupName = itemView.findViewById(R.id.group_title);
             groupMembers = itemView.findViewById(R.id.group_members);
             recommendation = itemView.findViewById(R.id.recommendation);
+            recommendation_status = itemView.findViewById(R.id.recommendation_status);
             removeGroup = itemView.findViewById(R.id.leave_group);
         }
     }

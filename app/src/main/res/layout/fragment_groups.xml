@@ -19,13 +19,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler"
-        android:layout_width="416dp"
-        android:layout_height="502dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="395dp"
+        android:layout_height="630dp"
+        android:layout_marginTop="8dp"
         android:descendantFocusability="blocksDescendants"
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.473"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView2" />
 

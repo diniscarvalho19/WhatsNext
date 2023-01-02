@@ -42,5 +42,11 @@
     <string name="recommended_movie">Recommended movie</string>
     <string name="pick_a_movie">Pick a movie</string>
     <string name="group_name_2">Group Name</string>
+    <string name="textview">TextView</string>
+    <string name="nameLogin">Name</string>
+    <string name="buttonLogin">Button</string>
+    <string name="no_movies_in_common">no movies in common</string>
+    <string name="recommendation">Recommendation:</string>
+    <string name="recommendation_status">Recommendation Status</string>
 
 </resources>

@@ -190,6 +190,7 @@ public class PopupCreateGroup implements RecyclerViewInterface {
                                                         .child(username)
                                                         .child(String.valueOf(groupName.getText()));
                                                 mDatabase.setValue(popupFriendlistAdapter.getGroupMembers());
+
                                                 ArrayList<String> members = popupFriendlistAdapter.getGroupMembers();
                                                 for(String name: members){
                                                     ArrayList<String> membersCopy = new ArrayList<>(members);

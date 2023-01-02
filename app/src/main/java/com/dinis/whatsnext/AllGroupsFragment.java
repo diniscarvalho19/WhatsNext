@@ -79,7 +79,6 @@ public class AllGroupsFragment extends Fragment implements RecyclerViewInterface
         //Initiate DB
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         assert user != null;
         String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
