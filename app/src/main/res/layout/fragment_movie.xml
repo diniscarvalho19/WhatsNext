@@ -6,22 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MovieFragment"
     android:orientation="vertical"
-    style= "@style/GeneralTheme">
+    style= "@style/GeneralTheme"
+    android:padding="8dp">
 
     <!-- TODO: Update blank fragment layout -->
-
     <ImageView
         android:id="@+id/movieCover"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        tools:src="@tools:sample/backgrounds/scenic"
+        android:adjustViewBounds='true'/>
 
     <TextView
         android:id="@+id/movieTitle"
+        style='@style/TextHeader1'
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginTop="16dp"
         android:text="TextView" />
 
     <Button

@@ -7,6 +7,7 @@
     tools:context=".MovieFragment"
     android:orientation="vertical"
     style= "@style/GeneralTheme">
+
     <TextView
         android:id="@+id/textView"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
@@ -15,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="409dp"

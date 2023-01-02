@@ -20,43 +20,52 @@
         android:layout_height="match_parent">
 
 
-
         <TextView
             android:id="@+id/group_requests_name"
+            style='@style/TextTitle'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="145dp"
             android:text="TextView"
-            android:textSize="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/accept_group"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/group_requests_members"
+            style='@style/TextBody'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/group_requests_members"
-            android:layout_marginStart="16dp"
+            android:layout_marginBottom="4dp"
             android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/group_requests_name"
-            app:layout_constraintTop_toBottomOf="@id/group_requests_name"/>
+            app:layout_constraintTop_toBottomOf="@id/group_requests_name" />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/accept_group"
-            app:layout_constraintStart_toEndOf="@id/group_requests_name"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="100dp"
-            android:src="@drawable/ic_baseline_check_24"/>
-        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/round_corner"
+            android:padding="8dp"
+            android:src="@drawable/ic_baseline_check_24"
+            app:layout_constraintEnd_toStartOf="@+id/reject_group"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/reject_group"
-            app:layout_constraintStart_toEndOf="@id/accept_group"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_delete_24"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/round_corner"
+            android:padding="8dp"
+            android:src="@drawable/ic_baseline_delete_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

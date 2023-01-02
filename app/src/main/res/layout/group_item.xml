@@ -39,8 +39,7 @@
                 style="@style/TextHeader2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/group_name_2"
                 android:textColor="@color/d_on_primary_container"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_corner"
-                android:padding="4dp"
                 android:radius="@dimen/border_radius"
                 android:src="@drawable/ic_baseline_expand_more_24"
                 app:layout_constraintBottom_toBottomOf="@id/fixed_layout"
@@ -73,25 +71,23 @@
 
         <TextView
             android:id="@+id/group_members"
+            style='@style/TextBody'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="50dp"
-            android:text="@string/members_of_group"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+            android:text="@string/members_of_group" />
 
         <TextView
             android:id="@+id/recommendation"
+            style='@style/TextTitle'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
-            android:text="@string/recommended_movie"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+            android:text="@string/recommended_movie" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -100,20 +96,30 @@
                 android:id="@+id/choose_movie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/pick_a_movie" />
+                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/pick_a_movie"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.51" />
 
             <ImageButton
                 android:id="@+id/leave_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="128dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_baseline_delete_24" />
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/round_corner"
+                android:padding="8dp"
+                android:src="@drawable/ic_baseline_delete_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
