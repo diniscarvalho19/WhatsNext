@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dinis.whatsnext.AllGroupsFragment;
 import com.dinis.whatsnext.FriendModelClass;
 import com.dinis.whatsnext.FriendRequestModelClass;
 import com.dinis.whatsnext.GlideApp;
@@ -863,6 +864,140 @@ public class TaskManager {
                         }
                     }
                 });
+            });
+        });
+
+    }
+
+    public void executeSendFriendRequest(List<FriendModelClass> mData, int pos, Callback callback){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("friends_list").child(mData.get(pos).getUsername()).child(username);
+            mDatabase.setValue(false);
+            mDatabase = database.getReference("friends_list").child(username).child(mData.get(pos).getUsername());
+            mDatabase.setValue(true);
+            handler.post(() ->{
+                callback.removeAt(pos);
+            });
+        });
+
+    }
+
+    public void executeGetAllGroups(AllGroupsFragment allGroupsFragment, RecyclerViewInterface rvi, RecyclerView recyclerView){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+            DatabaseReference mDatabase = database.getReference("groups").child(username);
+            ArrayList<GroupModel> groupModelArrayList = new ArrayList<>();
+            handler.post(() ->{
+                mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        } else {
+                            if (task.getResult().getValue() != null) {
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                if (result.contains("], ")) {
+                                    String[] groups = result.split("], ");
+                                    for (String g : groups) {
+                                        String tittle = g.split("=")[0];
+                                        String userList = g.split("=")[1].replace("[", "").replace("]", "");
+                                        groupModelArrayList.add(new GroupModel(tittle, userList));
+                                    }
+                                } else {
+                                    String tittle = result.split("=")[0];
+                                    String userList = result.split("=")[1].replace("[", "").replace("]", "");
+                                    groupModelArrayList.add(new GroupModel(tittle, userList));
+                                }
+
+
+                                GroupAdapter groupAdapter = new GroupAdapter(allGroupsFragment.getActivity(), groupModelArrayList, rvi);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(allGroupsFragment.getActivity());
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                recyclerView.setAdapter(groupAdapter);
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+    }
+
+    public void executeViewFriendRequests(Callback callback){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            List<FriendRequestModelClass> everyoneList = new ArrayList<>();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("friends_list");
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+
+            handler.post(() ->{
+                mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            if (task.getResult().getValue() != null){
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] users = result.split("\\}, ");
+                                int size = users.length;
+                                int count = 1;
+                                for(String usr: users){
+                                    if (count != size){
+                                        usr = usr + "}";
+                                    }
+                                    count++;
+                                    String[] data = usr.split("=\\{");
+                                    String name = data[0];
+                                    data = Arrays.copyOfRange(data, 1, data.length);
+                                    if(name.equals(username)){
+                                        for(String st : data){
+                                            st = st.substring(0, st.length() - 1);
+                                            for(String st2 : st.split(", ")){
+                                                String usernameReq = st2.split("=")[0];
+                                                String status = st2.split("=")[1];
+                                                if(!status.equals("true"))
+                                                    everyoneList.add(new FriendRequestModelClass(usernameReq,false));
+                                            }
+                                        }
+                                    }
+                                }
+                                callback.PutDataIntoRecyclerViewFriends(everyoneList);
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+    }
+
+    public void executeAcceptFriendRequest(int pos, List<FriendRequestModelClass> mData, Callback callback){
+        executor.execute(() -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            assert user != null;
+            String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference("friends_list").child(username).child(mData.get(pos).getName());
+            mDatabase.setValue(true);
+            handler.post(() ->{
+                callback.removeAt(pos);
             });
         });
 

@@ -9,26 +9,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyViewHolder> {
+public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyViewHolder> implements TaskManager.Callback {
 
     private final RecyclerViewInterface recyclerViewInterface;
     private final Context mContext;
     private final List<FriendModelClass> mData;
-    FirebaseAuth auth;
-    FirebaseUser user;
+    TaskManager.Callback callback;
+    TaskManager taskManager = new TaskManager();
 
 
     public CommunityAdapter(Context mContext, List<FriendModelClass> mData, RecyclerViewInterface recyclerViewInterface) {
@@ -49,6 +45,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        callback = this;
         int pos = position;
 
         holder.name.setText(mData.get(position).getUsername());
@@ -64,6 +61,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         }
 
 
+
         // Using Glide Library to display the image
         GlideApp.with(mContext)
                 .load(mData.get(position).getImage())
@@ -72,22 +70,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         holder.addFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Initiate DB
-                auth = FirebaseAuth.getInstance();
-                user = auth.getCurrentUser();
-                assert user != null;
-                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                DatabaseReference mDatabase = database.getReference("friends_list").child(mData.get(pos).getUsername()).child(username);
-                mDatabase.setValue(false);
-
-                mDatabase = database.getReference("friends_list").child(username).child(mData.get(pos).getUsername());
-                mDatabase.setValue(true);
-
-
-                Toast.makeText(mContext, "Request sent!",Toast.LENGTH_SHORT).show();
-                removeAt(pos);
+                taskManager.executeSendFriendRequest(mData, pos, callback);
             }
         });
 
@@ -138,12 +121,32 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         return mData.get(position);
     }
 
-    private void removeAt(int position) {
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void removeAt(int position) {
         mData.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mData.size());
     }
 
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
+
+    }
 
 
 }

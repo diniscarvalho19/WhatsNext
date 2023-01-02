@@ -1,38 +1,26 @@
 package com.dinis.whatsnext;
 
-import android.os.Bundle;
-
 import android.app.Fragment;
-
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AcceptFriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AcceptFriendsFragment extends Fragment implements RecyclerViewInterface{
+public class AcceptFriendsFragment extends Fragment implements RecyclerViewInterface, TaskManager.Callback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,10 +32,9 @@ public class AcceptFriendsFragment extends Fragment implements RecyclerViewInter
     private String mParam2;
 
     View root;
-    FirebaseAuth auth;
-    FirebaseUser user;
     RecyclerView recyclerView;
     AcceptedFriendsAdapter friendAdapter;
+    TaskManager taskManager = new TaskManager();
 
     public AcceptFriendsFragment() {
         // Required empty public constructor
@@ -88,54 +75,7 @@ public class AcceptFriendsFragment extends Fragment implements RecyclerViewInter
 
         recyclerView = root.findViewById(R.id.recyclerViewAccept);
 
-        //Initiate DB
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        List<FriendRequestModelClass> everyoneList = new ArrayList<>();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabase = database.getReference("friends_list");
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-        mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null){
-                        String result = task.getResult().getValue().toString().substring(1);
-                        result = result.substring(0, result.length() - 1);
-                        String[] users = result.split("\\}, ");
-                        int size = users.length;
-                        int count = 1;
-                        for(String usr: users){
-                            if (count != size){
-                                usr = usr + "}";
-                            }
-                            count++;
-                            String[] data = usr.split("=\\{");
-                            String name = data[0];
-                            data = Arrays.copyOfRange(data, 1, data.length);
-                            if(name.equals(username)){
-                                for(String st : data){
-                                    st = st.substring(0, st.length() - 1);
-                                    for(String st2 : st.split(", ")){
-                                        String usernameReq = st2.split("=")[0];
-                                        String status = st2.split("=")[1];
-                                        if(!status.equals("true"))
-                                            everyoneList.add(new FriendRequestModelClass(usernameReq,false));
-                                    }
-                                }
-                            }
-                        }
-                        PutDataIntoRecyclerViewFriends(everyoneList);
-                    }
-                }
-            }
-        });
-
-
+        taskManager.executeViewFriendRequests(this);
 
         return root;
     }
@@ -145,9 +85,30 @@ public class AcceptFriendsFragment extends Fragment implements RecyclerViewInter
 
     }
 
+    @Override
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList) {
+
+    }
+
+    @Override
     public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList){
         friendAdapter = new AcceptedFriendsAdapter(getActivity(), everyoneList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(friendAdapter);
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void removeAt(int pos) {
+
+    }
+
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
+
     }
 }
