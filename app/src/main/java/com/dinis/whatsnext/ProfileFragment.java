@@ -1,31 +1,23 @@
 package com.dinis.whatsnext;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Objects;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,18 +29,14 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     View root;
-    FirebaseAuth auth;
     Button logoutButton;
     Button acceptFriendsButton;
     Button addFriendsButton;
     Button listFriendsButton;
-    TextView textViewEmail;
-    TextView textViewUsername;
-    FirebaseUser user;
-    ImageView imageView;
     Fragment communityFragment = new CommunityFragment();
     Fragment acceptFriendsFragment = new AcceptFriendsFragment();
     Fragment listFriendsFragment = new FriendListFragment();
+    TaskManager taskManager = new TaskManager();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -111,30 +99,22 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        auth = FirebaseAuth.getInstance();
+
         logoutButton = root.findViewById(R.id.btn_logout);
         addFriendsButton = root.findViewById(R.id.btn_addFriends);
         acceptFriendsButton = root.findViewById(R.id.btn_acceptFriends);
         listFriendsButton = root.findViewById(R.id.btn_listFriends);
-        textViewEmail = root.findViewById(R.id.email);
-        textViewUsername = root.findViewById(R.id.username);
-        imageView = root.findViewById(R.id.profile_pic);
-        user = auth.getCurrentUser();
 
-        if (user == null){
-            Intent intent = new Intent(getActivity(), Login.class);
-            startActivity(intent);
-            getActivity().finish();
-        }else{
-            textViewEmail.setText(user.getEmail());
-            textViewUsername.setText(Objects.requireNonNull(user.getEmail()).split("@")[0]);
-            GlideApp.with(this).load("https://cdn-icons-png.flaticon.com/512/16/16363.png").into(imageView);
-        }
+
+        taskManager.executePopulateProfileFrag(this, root);
+
+
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
+                taskManager.executeSignOut();
                 Intent intent = new Intent(getActivity(), Login.class);
                 startActivity(intent);
                 getActivity().finish();

@@ -1,13 +1,10 @@
 package com.dinis.whatsnext;
 
-import android.app.Application;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import android.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +13,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,10 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -60,8 +50,7 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
     SearchView searchView;
-    FirebaseAuth auth;
-    FirebaseUser user;
+    TaskManager taskManager = new TaskManager();
     View root;
     Fragment movieFrag = new MovieFragment();
 
@@ -117,15 +106,8 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_main_page, container, false);
-        Date currentTime = Calendar.getInstance().getTime();
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
-        myRef.child(username).child("last_login").setValue(currentTime.toString());
 
+        taskManager.executeUpdateLogin();
 
         searchView = root.findViewById(R.id.searchView);
         searchView.clearFocus();
