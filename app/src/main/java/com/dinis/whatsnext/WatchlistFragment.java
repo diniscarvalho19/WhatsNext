@@ -60,7 +60,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root =inflater.inflate(R.layout.fragment_watchlist, container, false);
-        TextView textView = (TextView) root.findViewById(R.id.textView);
+        //TextView textView = (TextView) root.findViewById(R.id.textView);
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
         List<MovieModelClass> movieList;

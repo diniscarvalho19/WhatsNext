@@ -22,16 +22,18 @@
 
     <Button
         android:id="@+id/btn_create_group"
-        style="@style/ButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="92dp"
+        style="@style/ButtonText"
         android:text="@string/create_group_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:focusable="true"
         android:focusableInTouchMode="true"/>
+    <!--         style="@style/ButtonText" -->
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

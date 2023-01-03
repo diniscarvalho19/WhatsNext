@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- https://stackoverflow.com/questions/33847440/android-button-border-color -->
-    <item android:id="@+id/button_simple">
+    <item android:id="@+id/button_pressed" android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/d_surface" />
+            <stroke
+                android:width="@dimen/border_width"
+                android:color="@color/d_outline" />
+            <corners android:radius="@dimen/border_radius" />
+        </shape>
+    </item>
+    <item android:id="@+id/button_focused" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/d_surface" />
+            <!-- <stroke
+                android:width="@dimen/border_width"
+                android:color="@color/d_outline" /> -->
+            <corners android:radius="@dimen/border_radius" />
+        </shape>
+    </item>
+    <item android:id="@+id/button_default">
         <shape android:shape="rectangle">
             <solid android:color="@color/d_surface" />
             <!-- <stroke

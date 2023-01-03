@@ -63,8 +63,8 @@
     <style name="ButtonText">
         <item name="android:fontFamily">@font/roboto_bold</item>
         <item name="android:textSize">@dimen/text_button</item>
-        <item name="android:textColor">@color/d_surface</item>
-        <item name="android:background">@drawable/button_simple</item>
+        <!--<item name="android:textColor">@color/d_surface</item>
+        <item name="android:background">@drawable/button_simple</item>-->
         <item name="android:textAllCaps">true</item>
     </style>
 

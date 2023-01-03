@@ -23,6 +23,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/TextHeader2"
                 android:text="Title"
                 android:id="@+id/movie_title_popup"
                 android:textColor="@color/d_on_surface_variant"/>

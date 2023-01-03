@@ -48,5 +48,6 @@
     <string name="no_movies_in_common">no movies in common</string>
     <string name="recommendation">Recommendation:</string>
     <string name="recommendation_status">Recommendation Status</string>
+    <string name="watchlist_explanation">Add movies to your watchlist by using the search page!</string>
 
 </resources>
