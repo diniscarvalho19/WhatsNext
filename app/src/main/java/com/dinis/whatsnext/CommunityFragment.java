@@ -2,6 +2,7 @@ package com.dinis.whatsnext;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,13 +88,13 @@ public class CommunityFragment extends Fragment implements RecyclerViewInterface
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                taskManager.executeCommunityWithFilter(callback, query);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                taskManager.executeCommunityWithFilter(callback, newText);
+                return true;
             }
         });
 

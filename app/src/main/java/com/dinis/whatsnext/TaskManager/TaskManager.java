@@ -769,33 +769,60 @@ public class TaskManager {
                             Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            if (task.getResult().getValue() != null){
+                            if (task.getResult().getValue() != null) {
                                 String result = task.getResult().getValue().toString().substring(1);
                                 result = result.substring(0, result.length() - 1);
                                 String[] users = result.split("\\}, ");
                                 int size = users.length;
                                 int count = 1;
-                                for(String usr: users){
-                                    if (count != size){
+                                for (String usr : users) {
+                                    if (count != size) {
                                         usr = usr + "}";
                                     }
                                     count++;
                                     String[] data = usr.split("=\\{");
                                     String name = data[0];
                                     data = Arrays.copyOfRange(data, 1, data.length);
-                                    if(name.equals(username)){
-                                        for(String st : data){
+                                    if (!name.equals(username)) {
+                                        for (String st : data) {
                                             st = st.substring(0, st.length() - 1);
-                                            for(String st2 : st.split(", ")){
+                                            for (String st2 : st.split(", ")) {
                                                 String usernameReq = st2.split("=")[0];
                                                 String status = st2.split("=")[1];
-                                                friendList.add(usernameReq);
+                                                if (status.equals("false") && usernameReq.equals(username))
+                                                    pendingList.add(name);
                                             }
                                         }
                                     }
                                 }
                             }
-                            everyoneList.clear();
+                            if (task.getResult().getValue() != null) {
+                                String result = task.getResult().getValue().toString().substring(1);
+                                result = result.substring(0, result.length() - 1);
+                                String[] users = result.split("\\}, ");
+                                int size = users.length;
+                                int count = 1;
+                                for (String usr : users) {
+                                    if (count != size) {
+                                        usr = usr + "}";
+                                    }
+                                    count++;
+                                    String[] data = usr.split("=\\{");
+                                    String name = data[0];
+                                    data = Arrays.copyOfRange(data, 1, data.length);
+                                    if (!name.equals(username)) {
+                                        for (String st : data) {
+                                            st = st.substring(0, st.length() - 1);
+                                            for (String st2 : st.split(", ")) {
+                                                String usernameReq = st2.split("=")[0];
+                                                String status = st2.split("=")[1];
+                                                if (status.equals("true") && usernameReq.equals(username))
+                                                    friendList.add(name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -808,8 +835,18 @@ public class TaskManager {
                                             for(String usr: users){
                                                 String user_data = usr.replaceAll("\\{","");
                                                 String name = user_data.split("=")[0];
-                                                if(!name.equals(username) && name.contains(query) && !friendList.contains(name))
-                                                    everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png"));
+                                                if(!name.equals(username) && name.contains(query)){
+                                                    if(pendingList.contains(name)){
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("pending"));
+                                                    }else if(friendList.contains(name)){
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("accepted"));
+                                                    }else{
+                                                        everyoneList.add(new FriendModelClass(name,"https://cdn-icons-png.flaticon.com/512/16/16363.png").setStatus("not accepted"));
+                                                    }
+
+
+                                                }
+
                                             }
                                             callback.PutDataIntoRecyclerViewFriendsCommunity(everyoneList);
                                         }

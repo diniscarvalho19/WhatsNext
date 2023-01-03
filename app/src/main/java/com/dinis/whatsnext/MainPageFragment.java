@@ -112,21 +112,22 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
         searchView = root.findViewById(R.id.searchView);
         searchView.clearFocus();
 
+        searchView.setQueryHint("Search by title...");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                movieList = new ArrayList<>();
-                recyclerView = root.findViewById(R.id.recyclerView);
-                JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=" + query + "&country=uk";
-                GetData getData = new GetData();
-                getData.execute();
-                return true;
+             return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                movieList = new ArrayList<>();
+                recyclerView = root.findViewById(R.id.recyclerView);
+                JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=" + newText + "&country=uk";
+                GetData getData = new GetData();
+                getData.execute();
+                return true;
             }
         });
 
