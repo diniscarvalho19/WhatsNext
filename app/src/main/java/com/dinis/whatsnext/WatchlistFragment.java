@@ -2,12 +2,9 @@ package com.dinis.whatsnext;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,39 +12,27 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
-public class WatchlistFragment extends Fragment implements RecyclerViewInterface{
+public class WatchlistFragment extends Fragment implements RecyclerViewInterface, TaskManager.Callback{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
-    DB db;
-    FirebaseAuth auth;
-    FirebaseUser user;
-
+    TaskManager.Callback callback;
     View root;
     RecyclerView recyclerView;
     MovieAdapter adapter;
+
+    TaskManager taskManager = new TaskManager();
+
     public WatchlistFragment() {
         // Required empty public constructor
     }
@@ -76,61 +61,17 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         // Inflate the layout for this fragment
         root =inflater.inflate(R.layout.fragment_watchlist, container, false);
         TextView textView = (TextView) root.findViewById(R.id.textView);
-        db = DB.getInstance(getActivity());
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        //Initiate FB
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        List<MovieModelClass> movieList = new ArrayList<>();
+        List<MovieModelClass> movieList;
 
-        //Username
-        assert user != null;
-        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabase = database.getReference("watchlist");
-
-        //Read DB
-        mDatabase.child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    if (task.getResult().getValue() != null){
-                        String[] movies = Objects.requireNonNull(task.getResult().getValue()).toString().split(", t");
-                        for(String movie: movies){
-                            String[] movieDetails = movie.replaceAll("\\{","").replaceAll("\\}","").split("=img=");
-                            String id = movieDetails[0];
-                            movieDetails = movieDetails[1].split(", name=");
-                            String img = movieDetails[0];
-                            String name = movieDetails[1];
-                            movieList.add(new MovieModelClass(id,name,img,""));
-
-                        }
-
-                        PutDataIntoRecyclerView(movieList);
-                    }
-
-
-                }
-
-            }
-        });
-
-
-
-
-
-
+        movieList = taskManager.executeGetWatchlist(this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 // this method is called
-                // when the item is moved.
+                // when the item  is moved.
                 return false;
             }
 
@@ -148,8 +89,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                 // below line is to remove item from our array list.
                 movieList.remove(viewHolder.getAdapterPosition());
 
-                //delete
-                mDatabase.child(username).child(deletedMovie.getId()).removeValue();
+                taskManager.executeDeleteMovie(deletedMovie, callback);
 
 
 
@@ -166,12 +106,7 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
                         movieList.add(position, deletedMovie);
 
 
-                        //undo
-                        String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("watchlist");
-                        myRef.child(username).child(deletedMovie.getId()).child("name").setValue(deletedMovie.getName());
-                        myRef.child(username).child(deletedMovie.getId()).child("img").setValue(deletedMovie.getImg());
+                        taskManager.executeUnDeleteMovie(deletedMovie,callback);
 
                         // below line is to notify item is
                         // added to our adapter class.
@@ -185,11 +120,32 @@ public class WatchlistFragment extends Fragment implements RecyclerViewInterface
         return root;
     }
 
-    private void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
+    public void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
         adapter = new MovieAdapter((MainActivity)getActivity(), movieList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager((MainActivity)getActivity()));
         recyclerView.setAdapter(adapter);
     }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriends(List<FriendRequestModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void PutDataIntoRecyclerViewFriendsCommunity(List<FriendModelClass> everyoneList) {
+
+    }
+
+    @Override
+    public void removeAt(int pos) {
+
+    }
+
+    @Override
+    public void recHelper(ArrayList<String> recMovies, ArrayList<String> allMovies, @NonNull GroupAdapter.Viewholder holder) {
+
+    }
+
 
     @Override
     public void onItemClick(int position) {

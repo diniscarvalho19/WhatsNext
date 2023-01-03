@@ -8,31 +8,17 @@
     style= "@style/GeneralTheme">
 
 
-    <SearchView
-        android:id="@+id/searchView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/group_recycler"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></SearchView>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="502dp"
+        android:layout_width="395dp"
+        android:layout_height="630dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:descendantFocusability="blocksDescendants"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/btn_create_group"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.473"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_create_group"
@@ -44,7 +30,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_recycler" />
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

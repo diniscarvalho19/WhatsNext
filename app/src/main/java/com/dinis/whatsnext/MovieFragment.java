@@ -1,10 +1,7 @@
 package com.dinis.whatsnext;
 
-import android.os.Bundle;
-
 import android.app.Fragment;
-
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Objects;
+import com.dinis.whatsnext.TaskManager.TaskManager;
 
 
 public class MovieFragment extends Fragment {
@@ -29,9 +21,8 @@ public class MovieFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    FirebaseAuth auth;
-    FirebaseUser user;
     View root;
+    TaskManager taskManager = new TaskManager();
 
     Button addMovie;
     public MovieFragment() {
@@ -62,15 +53,13 @@ public class MovieFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_movie, container, false);
         Bundle bundle = this.getArguments();
-        String image, title, id, loc;
+        String image, title;
         image = bundle.getString("cover");
         title = bundle.getString("title");
-        id = bundle.getString("id");
+
         TextView textView = (TextView) root.findViewById(R.id.movieTitle);
         textView.setText(title);
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
 
         ImageView imageView = (ImageView) root.findViewById(R.id.movieCover);
         Glide.with(root)
@@ -80,13 +69,8 @@ public class MovieFragment extends Fragment {
         addMovie.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                                String username = Objects.requireNonNull(user.getEmail()).split("@")[0];
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("watchlist");
-                myRef.child(username).child(id).child("name").setValue(title);
-                myRef.child(username).child(id).child("img").setValue(image);
 
-
+                taskManager.executeAddMovie(bundle, getContext());
 
 
             }
