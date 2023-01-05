@@ -224,7 +224,9 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
                 e.printStackTrace();
             }
 
-            PutDataIntoRecyclerView(movieList);
+            List<MovieModelClass> newList = removeDuplicates(movieList);
+
+            PutDataIntoRecyclerView(newList);
 
         }
     }
@@ -235,5 +237,25 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(movieAdapter);
     }
+
+    public static <T> List<T> removeDuplicates(List<T> list)
+    {
+        // Create a new ArrayList
+        List<T> newList = new ArrayList<T>();
+
+        // Traverse through the first list
+        for (T element : list) {
+
+            // If this element is not present in newList
+            // then add it
+            if (!newList.contains(element)) {
+
+                newList.add(element);
+            }
+        }
+        // return the new list
+        return newList;
+    }
+
 
 }
