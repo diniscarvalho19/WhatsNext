@@ -27,6 +27,7 @@
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_baseline_expand_less_24.xml" value="0.1" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_baseline_expand_more_24.xml" value="0.1" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_baseline_group_24.xml" value="0.2645" />
+        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.2645" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_com.xml" value="0.2645" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2645" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/ic_search.xml" value="0.1" />
@@ -35,17 +36,17 @@
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/drawable/round_corner.xml" value="0.1" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/font-v26/fonts.xml" value="0.2675925925925926" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/font/fonts.xml" value="0.2675925925925926" />
-        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/activity_login.xml" value="0.16" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/activity_main.xml" value="0.259375" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/activity_registration.xml" value="0.11854103343465046" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_accept_friends.xml" value="0.259375" />
-        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_community.xml" value="0.259375" />
+        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_community.xml" value="0.264" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_friend_list.xml" value="0.259375" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_groups.xml" value="0.264" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_login.xml" value="0.259375" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_main_page.xml" value="0.264" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_movie.xml" value="0.259375" />
-        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_profile.xml" value="0.6" />
+        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/fragment_watchlist.xml" value="0.259375" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/friend_item.xml" value="0.4" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/group_item.xml" value="0.4" />
@@ -54,6 +55,7 @@
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/popup_group_create.xml" value="0.1" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/popup_movie_recommendation.xml" value="0.24375" />
         <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/layout/unfriend_item.xml" value="0.4" />
+        <entry key="..\:/Users/joaos/AndroidStudioProjects/WhatsNext/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.209" />
       </map>
     </option>
   </component>

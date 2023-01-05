@@ -49,5 +49,6 @@
     <string name="recommendation">Recommendation:</string>
     <string name="recommendation_status">Recommendation Status</string>
     <string name="watchlist_explanation">Add movies to your watchlist by using the search page!</string>
+    <string name="whatsnext">WhatsNext</string>
 
 </resources>

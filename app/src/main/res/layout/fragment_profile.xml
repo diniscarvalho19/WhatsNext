@@ -16,6 +16,7 @@
     <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:id="@+id/profile_pic"
+        android:src="@drawable/user"
         android:layout_width="137dp"
         android:layout_height="120dp"/>
 
@@ -103,7 +104,7 @@
         android:text="@string/logout"
         android:id="@+id/btn_logout"
         style="@style/ButtonText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

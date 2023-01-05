@@ -29,6 +29,8 @@
     <color name="d_on_background">#E3E2E6</color>
     <color name="d_surface">#1B1B1F</color>
     <color name="d_on_surface">#E3E2E6</color>
+    <color name="d_pending_on_background">#F8FC63</color>
+    <color name="d_friend_on_background">#72F964</color>
 
     <color name="d_surface_variant">#44474F</color>
     <color name="d_on_surface_variant">#C4C6D0</color>
