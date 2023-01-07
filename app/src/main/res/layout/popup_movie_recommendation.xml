@@ -10,8 +10,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
-        android:backgroundTint="@color/d_surface_variant"
+        android:backgroundTint="@color/d_secondary_container"
         android:layout_margin="8dp"
+        android:padding="8dp"
         >
 
         <LinearLayout
@@ -22,11 +23,12 @@
 
             <TextView
                 android:layout_width="match_parent"
+                android:layout_margin="8dp"
                 android:layout_height="wrap_content"
                 style="@style/TextHeader2"
+                android:textColor="@color/d_on_secondary_container"
                 android:text="Title"
-                android:id="@+id/movie_title_popup"
-                android:textColor="@color/d_on_surface_variant"/>
+                android:id="@+id/movie_title_popup" />
 
             <ImageView
                 android:id="@+id/movie_cover_popup"
@@ -43,7 +45,8 @@
                 android:background="@drawable/round_corner"
                 android:layout_gravity="right"
                 android:padding="8dp"
-                android:src="@drawable/ic_baseline_refresh_24" />
+                android:src="@drawable/ic_baseline_refresh_24"
+                app:tint="@color/d_on_secondary_container" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

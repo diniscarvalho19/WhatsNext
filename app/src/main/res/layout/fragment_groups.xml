@@ -8,17 +8,46 @@
     style= "@style/GeneralTheme">
 
 
+    <TextView
+        android:id="@+id/watchlistTitle"
+        style="@style/TextHeader1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="Groups"
+        app:layout_constraintBottom_toTopOf="@+id/watchlistExplanation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/watchlistExplanation"
+        style="@style/TextHeader2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:text="Manage your groups and pick movies to watch"
+        app:layout_constraintBottom_toTopOf="@+id/group_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/watchlistTitle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler"
         android:layout_width="395dp"
-        android:layout_height="630dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:descendantFocusability="blocksDescendants"
         android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_create_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/watchlistExplanation" />
 
     <Button
         android:id="@+id/btn_create_group"

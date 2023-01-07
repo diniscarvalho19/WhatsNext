@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MovieFragment"
     android:orientation="vertical"
-    android:padding="8dp"
     style= "@style/GeneralTheme">
 
     <TextView
