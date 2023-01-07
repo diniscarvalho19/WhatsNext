@@ -117,17 +117,17 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-             return false;
+                movieList = new ArrayList<>();
+                recyclerView = root.findViewById(R.id.recyclerView);
+                JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=" + query + "&country=uk";
+                GetData getData = new GetData();
+                getData.execute();
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                movieList = new ArrayList<>();
-                recyclerView = root.findViewById(R.id.recyclerView);
-                JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=" + newText + "&country=uk";
-                GetData getData = new GetData();
-                getData.execute();
-                return true;
+                return false;
             }
         });
 
@@ -217,7 +217,8 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
                     model.setId(id);
                     model.setName(jsonObject1.getString("name"));
                     model.setImg(jsonObject1.getString("picture"));
-                    movieList.add(model);
+                    if(!movieList.contains(model))
+                        movieList.add(model);
                 }
 
             } catch (JSONException e) {
@@ -233,6 +234,7 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
 
 
     private void PutDataIntoRecyclerView(List<MovieModelClass> movieList){
+        movieList = removeDuplicates(movieList);
         movieAdapter = new MovieAdapter(getContext(), movieList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(movieAdapter);
