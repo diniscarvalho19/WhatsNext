@@ -63,8 +63,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
 
 
         // Using Glide Library to display the image
-        GlideApp.with(mContext)
+        /*GlideApp.with(mContext)
                 .load(mData.get(position).getImage())
+                .into(holder.image);*/
+
+        GlideApp.with(mContext)
+                .load(R.drawable.user)
                 .into(holder.image);
 
         holder.addFriendBtn.setOnClickListener(new View.OnClickListener() {

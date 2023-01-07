@@ -52,7 +52,7 @@ public class AcceptedFriendsAdapter extends RecyclerView.Adapter<AcceptedFriends
 
         // Using Glide Library to display the image
         GlideApp.with(mContext)
-                .load("https://cdn-icons-png.flaticon.com/512/16/16363.png")
+                .load(R.drawable.user)
                 .into(holder.image);
 
         holder.addFriendBtn.setOnClickListener(new View.OnClickListener() {

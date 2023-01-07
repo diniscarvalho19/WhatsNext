@@ -109,8 +109,6 @@ public class ProfileFragment extends Fragment{
         taskManager.executePopulateProfileFrag(this, root);
 
 
-
-
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

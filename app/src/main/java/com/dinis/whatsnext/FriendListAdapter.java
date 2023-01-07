@@ -51,7 +51,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
 
         // Using Glide Library to display the image
         GlideApp.with(mContext)
-                .load("https://cdn-icons-png.flaticon.com/512/16/16363.png")
+                .load(R.drawable.user)
                 .into(holder.image);
 
 
