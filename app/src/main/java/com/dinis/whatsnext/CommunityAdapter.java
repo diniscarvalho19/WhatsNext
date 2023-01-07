@@ -51,12 +51,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         holder.name.setText(mData.get(position).getUsername());
 
         if(mData.get(position).getStatus().equals("not accepted")){
-            holder.name.setTextColor(Color.BLACK);
+            holder.name.setTextColor(Color.parseColor("#E3E2E6"));
         }else if(mData.get(position).getStatus().equals("accepted")){
-            holder.name.setTextColor(Color.GREEN);
+            holder.name.setTextColor(Color.parseColor("#72F964"));
             holder.removeButton();
         }else{
-            holder.name.setTextColor(Color.YELLOW);
+            holder.name.setTextColor(Color.parseColor("#F8FC63"));
             holder.removeButton();
         }
 

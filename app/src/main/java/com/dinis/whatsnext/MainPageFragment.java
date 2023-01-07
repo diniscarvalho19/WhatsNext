@@ -44,7 +44,7 @@ public class MainPageFragment extends Fragment implements RecyclerViewInterface{
     private String mParam1;
     private String mParam2;
     //popular movies
-    private static String JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=lost&country=uk";
+    private static String JSON_URL = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=a&country=pt";
 
     List<MovieModelClass>  movieList;
     RecyclerView recyclerView;
